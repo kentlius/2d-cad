@@ -1,68 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Tugas Besar 1 - 2D CAD</title>
-		<link rel="stylesheet" href="style.css" />
-		<script src="script.js" type="module" defer></script>
-	</head>
-	<body>
-		<div id="container">
-			<div id="canvas-container">
-				<canvas id="canvas"></canvas>
-			</div>
-			<div id="tools-container">
-				<div id="shape-tool">
-					<form >
-						<input type="radio" name="shape" id="line" value="line"> Line
-						<br>
-						<input type="radio" name="shape" id="square" value="square"> Square
-						<br>
-						<input type="radio" name="shape" id="rectangle" value="rectangle">Rectangle
-						<br>
-						<input type="radio" name="shape" id="polygon" value="polygon">Polygon
-						<br>
-					</form>
-				</div>
-				<div id="color-tool">
-					<input type="color" id="color_picker">
-				</div>
-				<div id="mouse-tool">
-					<input type="radio" name="edit-tool" id="draw" value="draw">
-					<label for="draw">Draw</label>
-					<input type="radio" name="edit-tool" id="edit" value="edit">
-					<label for="edit">Edit</label>
-				</div>
-				<div id="polygon-node-tool" style="display: flex;">
-					<div>Number of polygon's nodes</div>
-					<input type="number" id="number_of_nodes" min="3" value="3">
-				</div>
-				<div id="translation-tool">
-					<div>Translation</div>
-					<input type="range" id="x-axis-translation">
-					<label for="x-axis-translation">x-axis</label>
-					<input type="range" id="y-axis-translation">
-					<label for="y-axis-translation">y-axis</label>
-				</div>
-				<div id="dilation-tool">
-					<div>Dilation</div>
-					<input type="range" id="x-axis-dilation">
-					<label for="x-axis-dilation">x-axis</label>
-					<input type="range" id="y-axis-dilation">
-					<label for="y-axis-dilation">y-axis</label>
-				</div>
-				<div id="file-tool">
-					<button id="save">Save</button>
-					<input type="file" id="load_src" style="display:none">
-					<button id="load" onclick="document.getElementById('load_src').click()">Load</button>
-				</div>
-				<div id="user-guide">
-					<div id="help" class="button">Help</div>
-					<div id="clear" class="button">Clear canvas</div>
-				</div>
-			</div>
-		</div>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tugas Besar 1 - 2D CAD</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://www.cs.unm.edu/~angel/BOOK/INTERACTIVE_COMPUTER_GRAPHICS/SEVENTH_EDITION/CODE/Common/webgl-utils.js"></script>
+    <script src="utils.js"></script>
+    <script src="script.js" type="module" defer></script>
+    <script id="vertex-shader-2d" type="x-shader/x-vertex">
+      attribute vec2 a_position;
+      attribute vec4 a_color;
+
+      uniform mat3 u_matrix;
+
+      varying vec4 v_color;
+
+      void main() {
+        // Multiply the position by the matrix.
+        gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
+
+        v_color = a_color;
+      }
+    </script>
+    <script id="fragment-shader-2d" type="x-shader/x-fragment">
+      precision mediump float;
+
+      varying vec4 v_color;
+
+      void main() {
+        gl_FragColor = v_color;
+      }
+    </script>
+    <!-- <script src="https://webglfundamentals.org/webgl/resources/m3.js"></script> -->
+  </head>
+  <body>
+    <div id="container">
+      <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+      </div>
+      <div id="tools-container">
+        <div id="shape-tool">
+          <form>
+            <input type="radio" name="shape" id="line" value="line" /> Line
+            <br />
+            <input type="radio" name="shape" id="square" value="square" />
+            Square
+            <br />
+            <input
+              type="radio"
+              name="shape"
+              id="rectangle"
+              value="rectangle"
+            />Rectangle
+            <br />
+            <input
+              type="radio"
+              name="shape"
+              id="polygon"
+              value="polygon"
+            />Polygon
+            <br />
+          </form>
+        </div>
+        <div id="color-tool">
+          <input type="color" id="color_picker" />
+        </div>
+        <div id="mouse-tool">
+          <input type="radio" name="edit-tool" id="draw" value="draw" />
+          <label for="draw">Draw</label>
+          <input type="radio" name="edit-tool" id="edit" value="edit" />
+          <label for="edit">Edit</label>
+        </div>
+        <div id="polygon-node-tool" style="display: flex">
+          <div>Number of polygon's nodes</div>
+          <input type="number" id="number_of_nodes" min="3" value="3" />
+        </div>
+        <div id="translation-tool">
+          <div>Translation</div>
+          <input type="range" id="x-axis-translation" />
+          <label for="x-axis-translation">x-axis</label>
+          <input type="range" id="y-axis-translation" />
+          <label for="y-axis-translation">y-axis</label>
+        </div>
+        <div id="dilation-tool">
+          <div>Dilation</div>
+          <input type="range" id="x-axis-dilation" />
+          <label for="x-axis-dilation">x-axis</label>
+          <input type="range" id="y-axis-dilation" />
+          <label for="y-axis-dilation">y-axis</label>
+        </div>
+        <div id="file-tool">
+          <button id="save">Save</button>
+          <input type="file" id="load_src" style="display: none" />
+          <button
+            id="load"
+            onclick="document.getElementById('load_src').click()"
+          >
+            Load
+          </button>
+        </div>
+        <div id="user-guide">
+          <div id="help" class="button">Help</div>
+          <div id="clear" class="button">Clear canvas</div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
