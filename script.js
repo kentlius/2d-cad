@@ -1,40 +1,51 @@
 function main() {
-  const canvas = document.querySelector("#canvas");
-  const gl = WebGLUtils.setupWebGL(canvas);
-  if (!gl) {
-    return;
-  }
+  // initialize new Creator
+  let creator = new Creator();
 
-  // Get the strings for our GLSL shaders
-  const vertexShaderSource = document.querySelector("#vertex-shader-2d").text;
+  creator.canvas= document.querySelector("#canvas");
+  creator.gl = WebGLUtils.setupWebGL(creator.canvas);
+
+  // Tell WebGL how to convert from clip space to pixels
+  creator.gl.viewport(0, 0, creator.canvas.width, creator.canvas.height);
+
+  // Clear the canvas
+  creator.gl.clearColor(0, 0, 0, 0);
+  creator.gl.clear(creator.gl.COLOR_BUFFER_BIT);
+  
+  // Get the strings for GLSL shaders
+  const vertexShaderSource   = document.querySelector("#vertex-shader-2d").text;
   const fragmentShaderSource = document.querySelector("#fragment-shader-2d").text;
-
-  // create GLSL shaders, upload the GLSL source, compile the shaders
-  const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-
+  
+  // create GLSL shaders, upload the GLSL sources, then compile them
+  const vertexShader   = createShader(creator.gl, creator.gl.VERTEX_SHADER, vertexShaderSource);
+  const fragmentShader = createShader(creator.gl, creator.gl.FRAGMENT_SHADER, fragmentShaderSource);
+  
   // Link the two shaders into a program
-  const program = createProgram(gl, vertexShader, fragmentShader);
+  const program = createProgram(creator.gl, vertexShader, fragmentShader);
+  creator.gl.useProgram(program);
 
-  // look up where the vertex data needs to go.
-  const positionLocation = gl.getAttribLocation(program, "a_position");
-  const colorLocation = gl.getAttribLocation(program, "a_color");
+  // look up where the vertex data needs to go
+  const positionLocation = creator.gl.getAttribLocation(program, "a_position");
+  const colorLocation = creator.gl.getAttribLocation(program, "a_color");
+  creator.gl.enableVertexAttribArray(positionLocation);
 
-  // lookup uniforms
-  const matrixLocation = gl.getUniformLocation(program, "u_matrix");
+  // look up transformation uniform location
+  const matrixUniformLocation = creator.gl.getUniformLocation(program, "u_matrix");
+  const colorUniformLocation = creator.gl.getUniformLocation(program, "u_color");
+  creator.colorUniformLocation = colorUniformLocation;
 
-  // Create a buffer for the positions.
-  const positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  // // Set Geometry.
-  drawRectangle(gl, 0, 0, 100, 100)
+// ------------------------------------------------------------------------------------
+// TODO : pertimbangin alokasi bindBuffer di sini atau di setiap shape
 
-  // Create a buffer for the colors.
-  var colorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  // Set the colors.
-  setColors(gl);
+  // Create a buffer for the positions
+  const positionBuffer = creator.gl.createBuffer();
+  creator.gl.bindBuffer(creator.gl.ARRAY_BUFFER, positionBuffer);
 
+  // Create a buffer for the colors
+  var colorBuffer = creator.gl.createBuffer();
+  creator.gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+
+// ------------------------------------------------------------------------------------
   
   // // draw rectangle on mouse click
   canvas.onmousedown = function(event) {
@@ -184,7 +195,7 @@ function main() {
     matrix = m3.scale(matrix, scale[0], scale[1]);
 
     // Set the matrix.
-    gl.uniformMatrix3fv(matrixLocation, false, matrix);
+    gl.uniformMatrix3fv(matrixUniformLocation, false, matrix);
 
     // Draw the geometry.
     var primitiveType = gl.TRIANGLES;

@@ -15,6 +15,8 @@ class Creator {
         this.rectangles = [];
         this.polygons = [];
         this.color = new Color(0,0,0);
+
+        this.colorUniformLocation;
     }
 
     // clear canvas
