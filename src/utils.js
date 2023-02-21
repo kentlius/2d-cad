@@ -1,38 +1,13 @@
-function drawRectangle(gl, x, y, width, height) {
-  var x1 = x;
-  var x2 = x + width;
-  var y1 = y;
-  var y2 = y + height;
-  
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    // prettier-ignore
-    new Float32Array([
-      x1, y1, // top left
-      x2, y1, // top right
-      x1, y2, // bottom left
-      x2, y1, // top right
-      x1, y2, // bottom left
-      x2, y2 // bottom right
-    ]),
-    gl.STATIC_DRAW
-  );
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
+function initBuffer(gl, target, data) {
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(target, buffer);
+  gl.bufferData(target, data, gl.STATIC_DRAW);
+  return buffer;
 }
 
-function setColors(gl) {
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    // prettier-ignore
-    new Float32Array(
-      [ Math.random(), Math.random(), Math.random(), 1,
-        0.9, 0.7, 0.1, 1,
-        0.1, 0.3, 0.5, 1,
-        0.9, 0.7, 0.1, 1,
-        0.1, 0.3, 0.5, 1,
-        Math.random(), Math.random(), Math.random(), 1]),
-    gl.STATIC_DRAW
-  );
+function initAttribute(gl, attribute, size) {
+  gl.enableVertexAttribArray(attribute);
+  gl.vertexAttribPointer(attribute, size, gl.float, false, 0, 0);
 }
 
 function createShader(gl, type, source) {
