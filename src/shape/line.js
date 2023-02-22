@@ -1,6 +1,6 @@
 // Line constructor
 
-class Line {
+export class Line {
 
     //  construct a Line object
     constructor(x1,y1,x2,y2,color) {

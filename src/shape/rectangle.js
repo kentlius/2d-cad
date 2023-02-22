@@ -1,4 +1,4 @@
-class Rectangle {
+export class Rectangle {
   constructor(x, y, width, height, color) {
     this.x1 = x;
     this.x2 = x + width;
@@ -6,12 +6,12 @@ class Rectangle {
     this.y2 = y + height;
 
     this.vertices = [
-      x1, y1, // top left
-      x2, y1, // top right
-      x1, y2, // bottom left
-      x2, y1, // top right
-      x1, y2, // bottom left
-      x2, y2 // bottom right
+      this.x1, this.y1, // top left
+      this.x2, this.y1, // top right
+      this.x1, this.y2, // bottom left
+      this.x2, this.y1, // top right
+      this.x1, this.y2, // bottom left
+      this.x2, this.y2 // bottom right
     ]
 
     this.color = [
