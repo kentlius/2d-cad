@@ -12,9 +12,7 @@
     <script id="vertex-shader-2d" type="x-shader/x-vertex">
       attribute vec2 a_position;
       attribute vec4 a_color;
-
       uniform mat3 u_matrix;
-
       varying vec4 v_color;
 
       void main() {
@@ -45,22 +43,11 @@
           <form>
             <input type="radio" name="shape" id="line" value="line" /> Line
             <br />
-            <input type="radio" name="shape" id="square" value="square" />
-            Square
+            <input type="radio" name="shape" id="square" value="square" /> Square
             <br />
-            <input
-              type="radio"
-              name="shape"
-              id="rectangle"
-              value="rectangle"
-            />Rectangle
+            <input type="radio" name="shape" id="rectangle" value="rectangle" /> Rectangle
             <br />
-            <input
-              type="radio"
-              name="shape"
-              id="polygon"
-              value="polygon"
-            />Polygon
+            <input type="radio" name="shape" id="polygon" value="polygon" /> Polygon
             <br />
           </form>
         </div>
@@ -103,7 +90,7 @@
         </div>
         <div id="user-guide">
           <div id="help" class="button">Help</div>
-          <div id="clear" class="button">Clear canvas</div>
+          <div id="clear" class="button" onclick="clearCanvas()">Clear canvas</div>
         </div>
       </div>
     </div>

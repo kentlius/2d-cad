@@ -1,13 +1,41 @@
-function initBuffer(gl, target, data) {
-  const buffer = gl.createBuffer();
-  gl.bindBuffer(target, buffer);
-  gl.bufferData(target, data, gl.STATIC_DRAW);
-  return buffer;
+function initBuffers(gl, program, vBuffer, cBuffer) {
+
+  // binding position buffer
+  var positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vBuffer), gl.STATIC_DRAW);
+
+  // Turn on the position attribute
+  var positionAttributeLocation = gl.getAttribLocation(program, "a_position");
+  gl.enableVertexAttribArray(positionAttributeLocation);
+  gl.vertexAttribPointer(positionAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+
+  // binding color buffer
+  var colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cBuffer), gl.STATIC_DRAW);
+
+  // Turn on the color attribute
+  var colorAttributeLocation = gl.getAttribLocation(program, "a_color");
+  gl.enableVertexAttribArray(colorAttributeLocation);
+  gl.vertexAttribPointer(colorAttributeLocation, 4, gl.FLOAT, false, 0, 0);
+
+  return {
+    position: positionBuffer,
+    color: colorBuffer
+  };
 }
 
-function initAttribute(gl, attribute, size) {
+function initBuffer (gl, buff) {
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(buff), gl.STATIC_DRAW);
+}
+
+function initAttribute(gl, attribute, buffer, size) {
   gl.enableVertexAttribArray(attribute);
-  gl.vertexAttribPointer(attribute, size, gl.float, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.vertexAttribPointer(attribute, size, gl.FLOAT, false, 0, 0);
 }
 
 function createShader(gl, type, source) {
@@ -23,7 +51,7 @@ function createShader(gl, type, source) {
   gl.deleteShader(shader);
 }
 
-function createProgram(gl, vertexShader, fragmentShader) {
+function setupProgram(gl, vertexShader, fragmentShader) {
   var program = gl.createProgram();
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
