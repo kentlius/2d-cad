@@ -129,6 +129,27 @@ function recordMouse(event) {
   return { x, y };
 }
 
+// -----------------COLOR HANDLER----------------- //
+function changeColor(shapeType, idxOnContainer, idx) {
+  currentColor = getColor();
+  switch (shapeType) {
+    case 1: // line
+      container.lines[idxOnContainer].updateColor(idx, currentColor);
+      break;
+    case 2: // square
+      container.squares[idxOnContainer].updateColor(idx, currentColor); // TODO
+      break;
+    case 3: // rectangle
+      container.rectangles[idxOnContainer].updateColor(idx, currentColor); // TODO
+      break;
+    case 4: // polygon
+      container.polygons[idxOnContainer].updateColor(idx, currentColor); // TODO
+      break;
+    default:
+      break;
+  }
+  renderCanvas();
+}
 
 // -----------------LINE HANDLER----------------- //
 function lineClickHandler(event) {
@@ -245,6 +266,63 @@ function polygonMoveHandler(event) {
   renderCanvas();
 }
 
+// get chosen shape's information
+function getShapeInfo(event) {
+  let shapeType = 0,
+      idxOnContainer = -1,
+      idx = -1,
+      touchedPoint = -1,
+      isFound = false;
+  let { x, y } = recordMouse(event);
+
+  // check Lines
+  for (let i = 0; !isFound && i < container.lines.length; i++) {
+    touchedPoint = container.lines[i].touchVertex(x, y);
+    if (touchedPoint !== -1) {
+      shapeType = 1;
+      idxOnContainer = i;
+      idx = touchedPoint;
+      isFound = true;
+      break;
+    }
+  }
+
+  // check Squares
+  for (let i = 0; !isFound && i < container.squares.length; i++) {
+    touchedPoint = container.squares[i].touchVertex(x, y);
+    if (touchedPoint !== -1) {
+      shapeType = 2;
+      idxOnContainer = i;
+      idx = touchedPoint;
+      isFound = true;
+      break;
+    }
+  }
+
+  // check Rectangles
+  for (let i = 0; !isFound && i < container.rectangles.length; i++) {
+    touchedPoint = container.rectangles[i].touchVertex(x, y);
+    if (touchedPoint !== -1) {
+      shapeType = 3;
+      idxOnContainer = i;
+      idx = touchedPoint;
+      isFound = true;
+      break;
+    }
+  }
+
+  // check Polygons
+  for (let i = 0; !isFound && i < container.polygons.length; i++) {
+    touchedPoint = container.polygons[i].touchVertex(x, y);
+    if (touchedPoint !== -1) {
+      shapeType = 4;
+      idxOnContainer = i;
+      idx = touchedPoint;
+      break;
+    }
+  }
+  return { shapeType, idxOnContainer, idx };
+}
 
 // -----------------EVENT HANDLER----------------- //
 function eventHandler() {
@@ -263,7 +341,10 @@ function eventHandler() {
         polygonClickHandler(event);
       }
     } else if (document.querySelector("#edit").checked) {    // edit mode
-      // TODO
+      // get shape's information
+      let { shapeType, idxOnContainer, idx } = getShapeInfo(event);
+      // change color
+      changeColor(shapeType, idxOnContainer, idx);
     }
   });
 
@@ -275,13 +356,15 @@ function eventHandler() {
     if (document.querySelector("#draw").checked) {
       if (document.querySelector("#line").checked) {
         lineMoveHandler(event);
-      }
-      if (document.querySelector("#rectangle").checked) {
+      } else if (document.querySelector("#square").checked) {
+        squareMoveHandler(event);
+      } else if (document.querySelector("#rectangle").checked) {
         rectangleMoveHandler(event);
-      }
-      if (document.querySelector("#polygon").checked) {
+      } else if (document.querySelector("#polygon").checked) {
         polygonMoveHandler(event);
       }
+    } else if (document.querySelector("#edit").checked) {    // edit mode
+      // TODO
     }
   })
 

@@ -1,10 +1,11 @@
 export class Line {
-  constructor(x1, y1, x2, y2, colors) {
+  constructor(x1, y1, x2, y2, color) {
     // prettier-ignore
     this.data = [
-      x1, y1, colors[0], colors[1], colors[2], colors[3], // start point
-      x2, y2, colors[4], colors[5], colors[6], colors[7]  // end point
+      x1, y1, color[0], color[1], color[2], color[3], // start point
+      x2, y2, color[4], color[5], color[6], color[7]  // end point
     ]
+    this.acceptedRadius = 0.1;
   }
 
   updateVertex(x, y) {
@@ -12,11 +13,20 @@ export class Line {
     this.data[7] = y;
   }
 
-  updateColor(r,g,b,a) {
-    this.data[8] = r;
-    this.data[9] = g;
-    this.data[10] = b;
-    this.data[11] = a;
+  touchVertex(x, y){
+    for(let i = 0; i < this.data.length; i += 6){
+        if(Math.abs(this.data[i] - x) < this.acceptedRadius && Math.abs(this.data[i+1] - y) < this.acceptedRadius){
+            return i;
+        }
+    }
+    return -1;
+  }
+
+  updateColor(i, color){
+    this.data[i+2] = color[0];
+    this.data[i+3] = color[1];
+    this.data[i+4] = color[2];
+    this.data[i+5] = color[3];
   }
   
   render(gl) {
