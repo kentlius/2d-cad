@@ -40,24 +40,16 @@
           <form>
             <input type="radio" name="shape" id="line" value="line" /> Line
             <br />
-            <input type="radio" name="shape" id="square" value="square" />
-            Square
+            <input type="radio" name="shape" id="square" value="square" /> Square
             <br />
-            <input
-              type="radio"
-              name="shape"
-              id="rectangle"
-              value="rectangle"
-            />Rectangle
+            <input type="radio" name="shape" id="rectangle" value="rectangle"/> Rectangle
             <br />
-            <input
-              type="radio"
-              name="shape"
-              id="polygon"
-              value="polygon"
-            />Polygon
+            <input type="radio" name="shape" id="polygon" value="polygon"/> Polygon
             <br />
           </form>
+        </div>
+        <div id="polygon-node-tool" style="display: flex">
+          <input type="button" id="poly-finish" value="Finish"/>
         </div>
         <div id="color-tool">
           <input type="color" id="color_picker" />
@@ -68,10 +60,6 @@
           <input type="radio" name="edit-tool" id="edit" value="edit" />
           <label for="edit">Edit</label>
         </div>
-        <div id="polygon-node-tool" style="display: flex">
-          <div>Number of polygon's nodes</div>
-          <input type="number" id="number_of_nodes" min="3" value="3" />
-        </div>
         <div id="translation-tool">
           <div>Translation</div>
           <input type="range" id="x-axis-translation" />
@@ -81,10 +69,8 @@
         </div>
         <div id="dilation-tool">
           <div>Dilation</div>
-          <input type="range" id="x-axis-dilation" />
-          <label for="x-axis-dilation">x-axis</label>
-          <input type="range" id="y-axis-dilation" />
-          <label for="y-axis-dilation">y-axis</label>
+          <input type="range" id="dilation" />
+          <label for="dilation">scale</label>
         </div>
         <div id="file-tool">
           <button id="save">Save</button>
@@ -99,6 +85,81 @@
         <div id="user-guide">
           <div id="help" class="button">Help</div>
           <div id="clear" class="button">Clear canvas</div>
+        </div>
+        <div id="help-content">
+          <span id="close">&times;</span>
+          <h4>Garis</h4>
+          <ol>
+            <li>Pilih <i>radio button</i> Line</li>
+            <li>Klik canvas lalu <i>drag</i> untuk membentuk garis</li>
+          </ol>
+
+          <h4>Persegi</h4>
+          <ol>
+            <li>Klik <i>radio button</i> Square</li>
+            <li>Klik canvas lalu <i>drag</i> untuk membentuk persegi sesuai ukuran yang diinginkan</li>
+          </ol>
+
+          <h4>Persegi Panjang</h4>
+          <ol>
+            <li>Klik <i>radio button</i> Rectangle</li>
+            <li>Klik canvas lalu <i>drag</i> untuk membentuk persegi panjang sesuai ukuran yang diinginkan</li>
+          </ol>
+
+          <h4>Polygon</h4>
+          <ol>
+            <li>Klik tombol Poligon</li>
+            <li>Klik pada canvas untuk sebagai lokasi titik-titik pembentuk poligon</li>
+            <li>Jika titik-titik telah dibentuk semuanya, klik tombol <i>Finish</i> pada <i>tools</i> di kanan</li>
+          </ol>
+          
+          <h4>Memilih Warna Shape</h4>
+          <ol>
+            <li>Klik tombol Color Picker</li>
+            <li>Pilih warna yang diinginkan</li>
+            <li>Gambar shape yang diinginkan</li>
+          </ol>
+            
+          <h4>Mengubah Warna Model</h4>
+          <ol>
+            <li>Klik tombol <i>Edit</i></li>
+            <li>Klik tombol Color Picker</li>
+            <li>Pilih warna yang diinginkan</li>
+            <li>Klik salah satu sudut pada shape yang warnanya ingin diubah</li>
+          </ol>
+          
+          <h4>Menggeser posisi titik</h4>
+          <ol>
+            <li>Klik tombol <i>Edit</i></li>
+            <li>Klik salah satu sudut pada shape ingin dipindah</li>
+            <li>Pindah titik tersebut ke posisi yang diinginkan</li>
+          </ol>
+
+          <h4>Translasi Model</h4>
+          <ol>
+            <li>Klik tombol <i>Edit</i></li>
+            <li>Klik salah satu model yang ingin digeser</li>
+            <li>Pindah model tersebut ke posisi yang diinginkan menggunakan <i>Translation slider</i> di kanan</li>
+          </ol>
+          
+          <h4>Dilatasi Model</h4>
+          <ol>
+            <li>Klik tombol <i>Edit</i></li>
+            <li>Klik salah satu model yang ingin digeser</li>
+            <li><i>Scale</i> model tersebut ke posisi yang diinginkan menggunakan <i>Translation slider</i> di kanan</li>
+          </ol>
+
+          <h4>Menyimpan Model pada Canvas</h4>
+          <ol>
+              <li>Klik tombol Save untuk menyimpan model yang telah digambar pada canvas</li>
+          </ol>
+          
+          <h4>Memuat Model pada Canvas</h4>
+          <ol>
+            <li>Klik tombol <i>Load</i></li>
+            <li>Pilih model yang ingin dimuat. Model yang dapat ditampung wajib dalam ekstensi <strong>JSON</strong></li>
+            <li>Setelah model terpilih klik tombol <i>open</i></li>
+          </ol>
         </div>
       </div>
     </div>

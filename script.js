@@ -116,9 +116,19 @@ function eventHandler() {
   });
 
   const clearbtn = document.querySelector("#clear");
-  clearbtn.addEventListener("click", function(event) {
+  clearbtn.addEventListener("click", () => {
     clearCanvas();
   });
+
+  const helpbtn = document.querySelector("#help");
+  helpbtn.addEventListener("click", () => {
+    document.querySelector("#help-content").style.display = "inline";
+  });
+
+  const closebtn = document.querySelector("#close");
+  closebtn.addEventListener("click", () => {
+    document.querySelector("#help-content").style.display = "none";
+  })
 }
 
 window.onload = main;

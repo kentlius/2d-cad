@@ -32,16 +32,21 @@ canvas {
 	background-color: #f2f2f2;
 	border: 1px solid #cccccc;
 	overflow: auto;
+	width: 450px;
 }
 
-#tools-container > div {
+#tools-container > div  {
 	padding: 10px;
+}
+
+#shape-tool {
+	margin-top: 5px;
 }
 
 #polygon-node-tool > input {
 	font-size:medium;
 	width: 100px;
-
+	visibility: hidden;
 }
 
 #file-tool button {
@@ -72,7 +77,6 @@ canvas {
 	background-color: lightgray;
 }
 
-
 #help:hover {
     background-color: darkgray;
 }
@@ -80,4 +84,19 @@ canvas {
 #clear:hover {
 	background-color: #dd0000;
 	color: white;
+}
+
+#help-content {
+	display: none;
+	max-width: 100%;
+}
+
+#help-content li {
+	font-size: 14px;
+}
+
+#close {
+	float: right;
+	cursor: pointer;
+	font-size: 50px;
 }
