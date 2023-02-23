@@ -19,13 +19,14 @@ body {
   height: 720px;
   display: flex;
   justify-content: center;
+  background-color: #5c5c5c;
 }
 
 canvas {
   width: 720px;
   height: 720px;
   display: block;
-  background-color: azure;
+  background-color: rgb(255, 255, 255);
 	border: 5px solid #000;
 }
 

@@ -1,6 +1,6 @@
 export class Container {
   constructor() {
-    this.renderOrder = []; // 0: line, 1: square, 2: rectangle, 3: polygon
+    this.renderOrder = []; // 1: line, 2: square, 3: rectangle, 4: polygon
     this.lines = [];
     this.squares = [];
     this.rectangles = [];
