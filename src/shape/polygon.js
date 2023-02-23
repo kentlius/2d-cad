@@ -21,6 +21,7 @@ export class Polygon {
     }
 
     touchVertex(x, y){
+      console.log("lokasi",x,y)
         for(let i = 0; i < this.vertices.length; i += 6){
             if(Math.abs(this.vertices[i] - x) < 0.1 && Math.abs(this.vertices[i+1] - y) < 0.1){
                 return i;

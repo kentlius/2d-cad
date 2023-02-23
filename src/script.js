@@ -249,6 +249,7 @@ function polygonMoveHandler(event) {
 // -----------------EVENT HANDLER----------------- //
 function eventHandler() {
   canvas.addEventListener("mousedown", function (event) {
+
     if (document.querySelector("#draw").checked) {          // draw mode
       if (document.querySelector("#line").checked) {
         lineClickHandler(event);
@@ -267,6 +268,10 @@ function eventHandler() {
   });
 
   canvas.addEventListener("mousemove", function (event) {
+    const {x,y} = recordMouse(event);
+    mouseX = x
+    mouseY = y
+    
     if (document.querySelector("#draw").checked) {
       if (document.querySelector("#line").checked) {
         lineMoveHandler(event);
@@ -282,7 +287,7 @@ function eventHandler() {
 
   canvas.addEventListener("keypress", function (event) {
     if (document.querySelector("#draw").checked){
-      if (polygonClicked){
+      if (isPolygonHover){
         if (event.key == "Enter") {
           event.preventDefault();
           isPolygonHover = false;
