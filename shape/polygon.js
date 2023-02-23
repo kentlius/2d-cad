@@ -1,30 +1,17 @@
 export class Polygon {
     constructor() {
-      this.vertices = []
-      this.color = [
-        Math.random(), Math.random(), Math.random(), 1,
-        0.9, 0.7, 0.1, 1,
-        0.1, 0.3, 0.5, 1,
-        0.9, 0.7, 0.1, 1,
-        0.1, 0.3, 0.5, 1,
-        Math.random(), Math.random(), Math.random(), 1
-      ];
+      this.vertices = [];
     }
 
-    addVertex(x, y) {
-        this.vertices.push(x, y);
+    addVertex(x, y, colors) {
+        console.log(x,y)
+        this.vertices.push(x, y, colors[0], colors[1], colors[2], colors[3]);
     }
 
   
     render(gl) {
-      const rectBuffer = initBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(this.vertices));
-      gl.bindBuffer(gl.ARRAY_BUFFER, rectBuffer);
-      initAttribute(gl, rectBuffer, 2);
-  
-      const colorBuffer = initBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(this.color));
-      gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-      initAttribute(gl, colorBuffer, 4);
-  
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      console.log(this.vertices)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+      gl.drawArrays(gl.TRIANGLE_FAN, 0, 6);
     }
   }
