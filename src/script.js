@@ -1,5 +1,7 @@
 import { Container } from "./container.js"; 
 import { Line } from "./shape/line.js";
+import { Rectangle } from "./shape/rectangle.js";
+import { Square } from "./shape/square.js";
 
 let canvas = document.querySelector("#canvas");
 let gl = canvas.getContext("webgl");
@@ -86,6 +88,20 @@ function lineClickHandler(event) {
   container.lines.push(line);
   renderCanvas();
   // container.renderOrder.push(1);
+}
+
+function rectangleClickHandler(event) {
+  const {x , y} = recordMouse(event);
+  let rectangle = new Rectangle(x, y, 0.9, 0.4, [1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1]);
+  container.lines.push(rectangle);
+  renderCanvas();
+}
+
+function squareClickHandler(event) {
+  const {x , y} = recordMouse(event);
+  let square = new Square(x, y, 0.5, [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1]);
+  container.lines.push(square);
+  renderCanvas();
 }
 
 function eventHandler() {

@@ -5,12 +5,13 @@ export class Line {
     this.x2 = x2;
     this.y2 = y2;
 
+    // prettier-ignore
     this.data = [
-    this.x1, this.y1, colors[0], colors[1], colors[2], colors[3],
-    this.x2, this.y2, colors[4], colors[5], colors[6], colors[7]
+      this.x1, this.y1, colors[0], colors[1], colors[2], colors[3],
+      this.x2, this.y2, colors[4], colors[5], colors[6], colors[7]
     ]
   }
-
+  
   render(gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
     gl.drawArrays(gl.LINES, 0, 2);
