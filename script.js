@@ -22,7 +22,7 @@ let newRect = -1;
 let isRectHover = false;
 
 let newPolygon = -1;
-let isLinePolygon = false;
+let isPolygonHover = false;
 
 function renderCanvas() {
   clearCanvas();
@@ -217,18 +217,20 @@ function rectangleMoveHandler(event) {
 
 function polygonClickHandler(event) {
   const { x, y } = recordMouse(event);
+  currentColor = getColor();
+
   if (newPolygon === -1){
     let polygon = new Polygon();
     container.renderOrder.push(4);
-    polygon.addVertex(x, y,[1,0,0,1]);
-    polygon.addVertex(x, y,[1,0,0,1]);
+    polygon.addVertex(x, y,[...currentColor]);
+    polygon.addVertex(x, y,[...currentColor]);
     container.polygons.push(polygon);
     newPolygon = container.polygons.length - 1;
     isPolygonHover = true
   }
   else{
     let polygon_idx = container.polygons.length - 1;
-    container.polygons[polygon_idx].addVertex(x, y, [1,0,0,1]);
+    container.polygons[polygon_idx].addVertex(x, y, [...currentColor]);
   }
   renderCanvas();
 }
@@ -240,7 +242,6 @@ function polygonMoveHandler(event) {
   } else if(newPolygon !== -1) {
     container.polygons[newPolygon].updateVertex(x, y);
   }
-  container.polygons[newPolygon].updateVertex(x, y);
   renderCanvas();
 }
 
