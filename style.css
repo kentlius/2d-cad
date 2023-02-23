@@ -1,16 +1,17 @@
 * {
-	font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-html, body {
-  	height: 100%;
-  	margin: 0;
+html,
+body {
+  height: 100%;
+  margin: 0;
 }
 
 #container {
-	height: 100%;
-	display: flex;
-	flex-direction: row;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 #canvas-container {
@@ -29,74 +30,75 @@ canvas {
 }
 
 #tools-container {
-	background-color: #f2f2f2;
-	border: 1px solid #cccccc;
-	overflow: auto;
-	width: 450px;
+  background-color: #f2f2f2;
+  border: 1px solid #cccccc;
+  overflow: auto;
+  width: 450px;
 }
 
-#tools-container > div  {
-	padding: 10px;
+#tools-container > div {
+  padding: 10px;
 }
 
 #shape-tool {
-	margin-top: 5px;
+  margin-top: 5px;
 }
 
 #polygon-node-tool > input {
-	font-size:medium;
-	width: 100px;
-	visibility: hidden;
+  font-size: medium;
+  width: 100px;
+  visibility: hidden;
 }
 
 #file-tool button {
-	display: inline-block;
-	background-color: lightgray;
-	border-radius: 5px;
-	padding: 8px 10px;
-	cursor: pointer;
-	margin-right: 10px;
+  display: inline-block;
+  background-color: lightgray;
+  border-radius: 5px;
+  padding: 8px 10px;
+  cursor: pointer;
+  margin-right: 10px;
 }
 
 #file-tool button:hover {
-	background-color: darkgray;
+  background-color: darkgray;
 }
 
 #user-guide {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
-#help, #clear {
-    display: inline-block;
-    text-align: center;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-	border: 1px solid #cccccc;
-	background-color: lightgray;
+#help,
+#clear {
+  display: inline-block;
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid #cccccc;
+  background-color: lightgray;
 }
 
 #help:hover {
-    background-color: darkgray;
+  background-color: darkgray;
 }
 
 #clear:hover {
-	background-color: #dd0000;
-	color: white;
+  background-color: #dd0000;
+  color: white;
 }
 
 #help-content {
-	display: none;
-	max-width: 100%;
+  display: none;
+  max-width: 100%;
 }
 
 #help-content li {
-	font-size: 14px;
+  font-size: 14px;
 }
 
 #close {
-	float: right;
-	cursor: pointer;
-	font-size: 50px;
+  float: right;
+  cursor: pointer;
+  font-size: 50px;
 }
