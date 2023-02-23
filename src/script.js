@@ -12,10 +12,17 @@ let currentColor = [0, 0, 0, 1];
 
 // Shape data
 let container = new Container();
-let polygonClicked = false;
+let mouseX = 0;
+let mouseY = 0;
 
 let newLine = -1;
-let isHover = false;
+let isLineHover = false;
+
+let newRect = -1;
+let isRectHover = false;
+
+let newPolygon = -1;
+let isLinePolygon = false;
 
 function renderCanvas() {
   clearCanvas();
@@ -92,7 +99,6 @@ const main = () => {
   // ------------------------------ //
 };
 
-
 function resetCanvas() {
   container.clear();
   clearCanvas();
@@ -134,18 +140,18 @@ function lineClickHandler(event) {
     container.renderOrder.push(1);
     container.lines.push(line);
     newLine = container.lines.length - 1;
-    isHover = true;
+    isLineHover = true;
   } else {                // ada line yang sedang dibentuk
     container.lines[newLine].updateVertex(x, y);
     newLine = -1;
-    isHover = false;
+    isLineHover = false;
   }
   renderCanvas();
 }
 
 function lineMoveHandler(event) {
   const { x, y } = recordMouse(event);
-  if(!isHover) {
+  if(!isLineHover) {
     return;
   } else if(newLine !== -1) {
     container.lines[newLine].updateVertex(x, y);
@@ -173,33 +179,68 @@ function squareClickHandler(event) {
 // -----------------RECTANGLE HANDLER----------------- //
 function rectangleClickHandler(event) {
   const { x, y } = recordMouse(event);
-  let rectangle = new Rectangle(
-    x,
-    y,
-    0.9,
-    0.4,
-    [1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1]
-  );
-  container.renderOrder.push(3);
-  container.rectangles.push(rectangle);
+  currentColor = getColor();
+  if (newRect === -1){
+    let rectangle = new Rectangle(
+      x,
+      y,
+      0,
+      0,
+      [...currentColor, ...currentColor,...currentColor, ...currentColor]
+    );
+    container.renderOrder.push(3);
+    container.rectangles.push(rectangle);
+    newRect = container.rectangles.length - 1;
+    isRectHover = true
+  }
+  else{
+    let rectangle_idx = container.rectangles.length - 1;
+    container.rectangles[rectangle_idx].updateVertex(x, y);
+    newRect = -1;
+    isRectHover = false;
+  }
+  renderCanvas();
+}
+
+function rectangleMoveHandler(event) {
+  const { x, y } = recordMouse(event);
+  if(!isRectHover) {
+    return;
+  } else if(newRect !== -1) {
+    container.rectangles[newRect].updateVertex(x, y);
+  }
   renderCanvas();
 }
 
 
 // -----------------POLYGON HANDLER----------------- //
+
 function polygonClickHandler(event) {
   const { x, y } = recordMouse(event);
-  if (polygonClicked) {
-    let polygon_idx = container.polygons.length - 1;
-    container.polygons[polygon_idx].addVertex(x, y, [1,1,0,1]);
-  }
-  else {
+  if (newPolygon === -1){
     let polygon = new Polygon();
-    polygon.addVertex(x, y,[1,0,0,1]);
     container.renderOrder.push(4);
+    polygon.addVertex(x, y,[1,0,0,1]);
+    polygon.addVertex(x, y,[1,0,0,1]);
     container.polygons.push(polygon);
-    polygonClicked = true;
+    newPolygon = container.polygons.length - 1;
+    isPolygonHover = true
   }
+  else{
+    let polygon_idx = container.polygons.length - 1;
+    container.polygons[polygon_idx].addVertex(x, y, [1,0,0,1]);
+  }
+  renderCanvas();
+}
+
+function polygonMoveHandler(event) {
+  const { x, y } = recordMouse(event);
+  if(!isPolygonHover) {
+    return;
+  } else if(newPolygon !== -1) {
+    container.polygons[newPolygon].updateVertex(x, y);
+  }
+  container.polygons[newPolygon].updateVertex(x, y);
   renderCanvas();
 }
 
@@ -209,14 +250,11 @@ function eventHandler() {
   canvas.addEventListener("mousedown", function (event) {
     if (document.querySelector("#draw").checked) {          // draw mode
       if (document.querySelector("#line").checked) {
-        polygonClicked = false;
         lineClickHandler(event);
       } else if (document.querySelector("#square").checked) {
-        polygonClicked = false;
         squareClickHandler(event);
       }
       else if (document.querySelector("#rectangle").checked) {
-        polygonClicked = false;
         rectangleClickHandler(event);
       }
       else if (document.querySelector("#polygon").checked) {
@@ -231,6 +269,38 @@ function eventHandler() {
     if (document.querySelector("#draw").checked) {
       if (document.querySelector("#line").checked) {
         lineMoveHandler(event);
+      }
+      if (document.querySelector("#rectangle").checked) {
+        rectangleMoveHandler(event);
+      }
+      if (document.querySelector("#polygon").checked) {
+        polygonMoveHandler(event);
+      }
+    }
+  })
+
+  canvas.addEventListener("keypress", function (event) {
+    if (document.querySelector("#draw").checked){
+      if (polygonClicked){
+        if (event.key == "Enter") {
+          event.preventDefault();
+          isPolygonHover = false;
+          newPolygon = -1;
+          renderCanvas();
+        }
+      }
+    }else{
+      if (event.key == "Enter") {
+        let idx_poligon = -1;
+        for (let i = 0; i < container.polygons.length; i++) {
+          idx_poligon = container.polygons[i].touchVertex(mouseX, mouseY);
+          console.log(idx_poligon)
+          if (idx_poligon != -1) {
+            container.polygons[i].removeVertex(idx_poligon);
+            renderCanvas();
+            break;
+          }
+        }
       }
     }
   });

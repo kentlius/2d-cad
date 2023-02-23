@@ -16,6 +16,15 @@ export class Rectangle {
     ]
   }
 
+  updateVertex(x, y) {
+    this.data[6] = x
+    this.data[18] = x
+    this.data[30] = x
+    this.data[13] = y
+    this.data[25] = y
+    this.data[31] = y
+  }
+
   render(gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
