@@ -4,6 +4,7 @@ export class Rectangle {
     this.x2 = x + width;
     this.y1 = y;
     this.y2 = y + height;
+    this.acceptedRadius = 0.1;
 
     // prettier-ignore
     this.data = [
@@ -23,6 +24,52 @@ export class Rectangle {
     this.data[13] = y
     this.data[25] = y
     this.data[31] = y
+  }
+
+  touchVertex(x, y){
+    for(let i = 0; i < this.data.length; i += 6){
+        if(Math.abs(this.data[i] - x) < this.acceptedRadius && Math.abs(this.data[i+1] - y) < this.acceptedRadius){
+            return i;
+        }
+    }
+    return -1;
+  }
+
+  updateColor(i, color){
+    this.data[i+2] = color[0];
+    this.data[i+3] = color[1];
+    this.data[i+4] = color[2];
+    this.data[i+5] = color[3];
+
+    //  HANDLE TOP RIGHT ADA 2
+    if (i == 6){
+      this.data[20] = color[0];
+      this.data[21] = color[1];
+      this.data[22] = color[2];
+      this.data[23] = color[3];
+    }
+
+    if (i==18){
+      this.data[8] = color[0];
+      this.data[9] = color[1];
+      this.data[10] = color[2];
+      this.data[11] = color[3];
+    }
+
+    // HANDLE BOTTOM LEFT ADA 2
+    if (i == 24){
+      this.data[14] = color[0];
+      this.data[15] = color[1];
+      this.data[16] = color[2];
+      this.data[17] = color[3];
+    }
+
+    if (i==12){
+      this.data[26] = color[0];
+      this.data[27] = color[1];
+      this.data[28] = color[2];
+      this.data[29] = color[3];
+    }
   }
 
   render(gl) {

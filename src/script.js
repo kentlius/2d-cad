@@ -18,6 +18,9 @@ let mouseY = 0;
 let newLine = -1;
 let isLineHover = false;
 
+let newSquare = -1;
+let isSquareHover = false;
+
 let newRect = -1;
 let isRectHover = false;
 
@@ -126,12 +129,15 @@ function clearCanvas() {
 function recordMouse(event) {
   let x = (event.offsetX / canvas.clientWidth) * 2 - 1;
   let y = (1 - event.offsetY / canvas.clientHeight) * 2 - 1;
+
+  console.log(x,y)
   return { x, y };
 }
 
 // -----------------COLOR HANDLER----------------- //
 function changeColor(shapeType, idxOnContainer, idx) {
   currentColor = getColor();
+  console.log(shapeType,idxOnContainer,idx)
   switch (shapeType) {
     case 1: // line
       container.lines[idxOnContainer].updateColor(idx, currentColor);
@@ -185,14 +191,35 @@ function lineMoveHandler(event) {
 // -----------------SQUARE HANDLER----------------- //
 function squareClickHandler(event) {
   const { x, y } = recordMouse(event);
-  let square = new Square(
-    x,
-    y,
-    0.5,
-    [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1]
-  );
-  container.renderOrder.push(2);
-  container.squares.push(square);
+  currentColor = getColor();
+  if (newSquare === -1){
+    let square = new Square(
+      x,
+      y,
+      0,
+      [...currentColor, ...currentColor,...currentColor, ...currentColor]
+    );
+    container.renderOrder.push(2);
+    container.squares.push(square);
+    newSquare = container.squares.length - 1;
+    isSquareHover = true
+  }
+  else{
+    let square_idx = container.squares.length - 1;
+    container.squares[square_idx].updateVertex(x, y);
+    newSquare = -1;
+    isSquareHover = false;
+  }
+  renderCanvas();
+}
+
+function squareMoveHandler(event) {
+  const { x, y } = recordMouse(event);
+  if(!isSquareHover) {
+    return;
+  } else if(newSquare !== -1) {
+    container.squares[newSquare].updateVertex(x);
+  }
   renderCanvas();
 }
 
