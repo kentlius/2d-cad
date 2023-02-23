@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://www.cs.unm.edu/~angel/BOOK/INTERACTIVE_COMPUTER_GRAPHICS/SEVENTH_EDITION/CODE/Common/webgl-utils.js"></script>
     <script id="vertex-shader-2d" type="x-shader/x-vertex">
-      attribute vec2 a_position;
+      attribute vec4 a_position;
       attribute vec4 a_color;
       varying vec4 v_color;
       
       void main() {
-        gl_Position = vec4(a_position, 0.0, 1.0);
+        gl_Position = a_position;
         v_color = a_color;
       }
     </script>
@@ -26,9 +26,7 @@
       }
     </script>
     <script src="utils.js"></script>
-    <script src="container.js"></script>
     <script src="script.js" type="module" defer></script>
-    <!-- <script src="https://webglfundamentals.org/webgl/resources/m3.js"></script> -->
   </head>
   <body>
     <div id="container">
