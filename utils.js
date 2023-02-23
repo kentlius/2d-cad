@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 function initBuffer(gl, target, data) {
   const buffer = gl.createBuffer();
   gl.bindBuffer(target, buffer);
@@ -8,6 +9,19 @@ function initBuffer(gl, target, data) {
 function initAttribute(gl, attribute, size) {
   gl.enableVertexAttribArray(attribute);
   gl.vertexAttribPointer(attribute, size, gl.float, false, 0, 0);
+=======
+function initBuffer (gl, buff) {
+  var buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(buff), gl.STATIC_DRAW);
+  return buffer;
+}
+
+function initAttribute(gl, attrLocation, buffer, size) {
+  gl.vertexAttribPointer(attrLocation, size, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.enableVertexAttribArray(attrLocation);
+>>>>>>> Stashed changes
 }
 
 function createShader(gl, type, source) {
