@@ -2,16 +2,24 @@ import { Container } from "./container.js";
 import { Line } from "./shape/line.js";
 import { Rectangle } from "./shape/rectangle.js";
 import { Square } from "./shape/square.js";
+import { Polygon } from "./shape/polygon.js";
 
 let canvas = document.querySelector("#canvas");
 let gl = canvas.getContext("webgl");
 let container = new Container();
+let polygonClicked = false;
 
 function renderCanvas() {
   clearCanvas();
 
   for (let i = 0; i < container.lines.length; i++) {
     container.lines[i].render(gl);
+  }
+  for (let i = 0; i < container.rectangles.length; i++) {
+    container.rectangles[i].render(gl);
+  }
+  for (let i = 0; i < container.polygons.length; i++) {
+    container.polygons[i].render(gl);
   }
 }
 
@@ -111,7 +119,7 @@ function rectangleClickHandler(event) {
     0.4,
     [1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1]
   );
-  container.lines.push(rectangle);
+  container.rectangles.push(rectangle);
   renderCanvas();
 }
 
@@ -123,7 +131,24 @@ function squareClickHandler(event) {
     0.5,
     [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1]
   );
-  container.lines.push(square);
+  container.squares.push(square);
+  renderCanvas();
+}
+
+function polygonClickHandler(event) {
+  const { x, y } = recordMouse(event);
+  if (polygonClicked) {
+    let polygon_idx = container.polygons.length - 1;
+    container.polygons[polygon_idx].addVertex(x, y, [1,1,0,1]);
+    
+  }
+  else {
+    let polygon = new Polygon();
+    polygon.addVertex(x, y,[1,0,0,1]);
+    container.polygons.push(polygon);
+    polygonClicked = true;
+    console.log(container.polygons.length)
+  }
   renderCanvas();
 }
 
@@ -131,11 +156,14 @@ function eventHandler() {
   canvas.addEventListener("mousedown", function (event) {
     if (document.querySelector("#draw").checked) {
       if (document.querySelector("#line").checked) {
+        polygonClicked = false;
         lineClickHandler(event);
       } else if (document.querySelector("#square").checked) {
+        polygonClicked = false;
         squareClickHandler(event);
       } // TODO
       else if (document.querySelector("#rectangle").checked) {
+        polygonClicked = false;
         rectangleClickHandler(event);
       } // TODO
       else if (document.querySelector("#polygon").checked) {
