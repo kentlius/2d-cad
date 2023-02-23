@@ -30,3 +30,7 @@ export class Rectangle {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   }
 }
+
+// TODO
+// 1. touchVertex
+// 2. updateColor

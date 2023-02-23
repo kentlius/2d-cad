@@ -21,3 +21,8 @@ export class Square {
       gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
   }
+
+// TODO
+// 1. updateVertex
+// 2. touchVertex
+// 3. updateColor
