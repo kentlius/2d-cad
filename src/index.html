@@ -7,32 +7,33 @@
     <title>Tugas Besar 1 - 2D CAD</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://www.cs.unm.edu/~angel/BOOK/INTERACTIVE_COMPUTER_GRAPHICS/SEVENTH_EDITION/CODE/Common/webgl-utils.js"></script>
-    <script src="utils.js"></script>
-    <script src="script.js" type="module" defer></script>
     <script id="vertex-shader-2d" type="x-shader/x-vertex">
       attribute vec2 a_position;
       attribute vec4 a_color;
+<<<<<<< Updated upstream
 
       uniform mat3 u_matrix;
 
+=======
+>>>>>>> Stashed changes
       varying vec4 v_color;
-
+      
       void main() {
-        // Multiply the position by the matrix.
-        gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-
+        gl_Position = vec4(a_position, 0.0, 1.0);
         v_color = a_color;
       }
     </script>
     <script id="fragment-shader-2d" type="x-shader/x-fragment">
       precision mediump float;
-
       varying vec4 v_color;
-
+      
       void main() {
         gl_FragColor = v_color;
       }
     </script>
+    <script src="utils.js"></script>
+    <script src="container.js"></script>
+    <script src="script.js" type="module" defer></script>
     <!-- <script src="https://webglfundamentals.org/webgl/resources/m3.js"></script> -->
   </head>
   <body>
