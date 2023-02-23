@@ -12,7 +12,6 @@ function renderCanvas() {
 
   for (let i = 0; i < container.lines.length; i++) {
     container.lines[i].render(gl);
-    console.log(container.lines[i].data);
   }
 }
 
@@ -64,6 +63,11 @@ const main = () => {
   renderCanvas();
   // ------------------------------ //
 };
+
+function resetCanvas() {
+  container.clear();
+  clearCanvas();
+}
 
 function clearCanvas() {
   function resizeCanvasToDisplaySize(canvas, multiplier) {
@@ -142,7 +146,7 @@ function eventHandler() {
 
   const clearbtn = document.querySelector("#clear");
   clearbtn.addEventListener("click", () => {
-    clearCanvas();
+    resetCanvas();
   });
 
   const helpbtn = document.querySelector("#help");
