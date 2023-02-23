@@ -6,4 +6,12 @@ export class Container {
     this.rectangles = [];
     this.polygons = [];
   }
+
+  clear() {
+    this.renderOrder = [];
+    this.lines = [];
+    this.squares = [];
+    this.rectangles = [];
+    this.polygons = [];
+  }
 }
