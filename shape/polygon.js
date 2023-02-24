@@ -83,7 +83,7 @@ export class Polygon {
         // Mencari titik yang paling berorientasi searah jarum jam
         orientation = 0
         hullVertices.push(this.data[p * 6], this.data[p * 6 + 1], this.data[p * 6 + 2], this.data[p * 6 + 3], this.data[p * 6 + 4], this.data[p * 6 + 5]);
-        q = (p + 6) % n;
+        q = (p+1) % n;
         for (let i = 0; i < n; i++) {
           tempOrientation = this.orientation({x: this.data[p * 6], y: this.data[p * 6 + 1]}, {x: this.data[i * 6], y: this.data[i * 6 + 1]}, {x: this.data[q * 6], y: this.data[q * 6 + 1]})
           if (tempOrientation < 0) {
@@ -105,15 +105,17 @@ export class Polygon {
     } else{
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
     }
-  
+
+    let n = convexHull? this.convexHull().length / 6 : this.data.length / 6;
+
     if (this.data.length > 12) {
-      gl.drawArrays(gl.TRIANGLE_FAN, 0, this.data.length / 6);
+      gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
     }
     else if (this.data.length == 12) {
-      gl.drawArrays(gl.LINES, 0, this.data.length / 6);
+      gl.drawArrays(gl.LINES, 0, n);
     }
     else{
-      gl.drawArrays(gl.POINTS, 0, this.data.length / 6);
+      gl.drawArrays(gl.POINTS, 0, n);
     }
   }
 }
