@@ -19,7 +19,7 @@ export class Square {
 
   // NGUBAH x dan y nya sesuai sumbu x
   updateVertex(idx, x) {
-    // Top Right, change x2 y2
+    // Top Right, change x2 y1
     if (idx == 6){
       this.data[6] = x,
       this.data[18] = x,
@@ -27,7 +27,7 @@ export class Square {
       this.data[1] += x - this.x2,
       this.data[7] += x - this.x2,
       this.data[19] += x - this.x2,
-      this.y2 += x - this.x2,
+      this.y1 += x - this.x2,
       this.x2 = x
     } else if (idx == 0){ // Top left change x1 y1
       this.data[0] = x,
@@ -45,7 +45,7 @@ export class Square {
       this.data[13] += x - this.x1,
       this.data[25] += x - this.x1,
       this.data[31] += x - this.x1,
-      this.y1 += x - this.x1,
+      this.y2 += x - this.x1,
       this.x1 = x 
     } else if (idx == 30){ // Bottom right change x2 y2
       this.data[6] = x,
@@ -54,7 +54,7 @@ export class Square {
       this.data[13] -= x - this.x2,
       this.data[25] -= x - this.x2,
       this.data[31] -= x - this.x2,
-      this.y1 -= x - this.x2,
+      this.y2 -= x - this.x2,
       this.x2 = x
     }
   }
