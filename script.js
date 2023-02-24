@@ -54,7 +54,7 @@ function renderCanvas() {
         rectangleP++;
         break;
       case 4:
-        container.polygons[polygonP].render(gl);
+        container.polygons[polygonP].render(gl, document.querySelector("#convexhull").checked);
         polygonP++;
         break;
     }
@@ -578,6 +578,12 @@ function eventHandler() {
   closebtn.addEventListener("click", () => {
     document.querySelector("#help-content").style.display = "none";
   });
+
+  const convexHull = document.querySelector("#convexhull")
+  convexHull.addEventListener("click", () => {
+    renderCanvas();
+  }
+  );
 }
 
 window.onload = main;
