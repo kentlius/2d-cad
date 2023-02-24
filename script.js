@@ -157,8 +157,6 @@ function changeColor(shapeType, idxOnContainer, idx) {
       break;
     case 3: // rectangle
       container.rectangles[idxOnContainer].updateColor(idx, currentColor);
-      console.log("ini rect:");
-      console.log(container.rectangles[idxOnContainer]);
       break;
     case 4: // polygon
       container.polygons[idxOnContainer].updateColor(idx, currentColor);
@@ -592,8 +590,6 @@ function eventHandler() {
   );
   const saveBtn = document.querySelector("#save");
   saveBtn.addEventListener("click", () => {
-    console.log("ini container:");
-    console.log(container);
     // define models
     const models = {
       renderOrder : container.renderOrder,
@@ -612,8 +608,6 @@ function eventHandler() {
     a.download = "models.json";
     a.click();
     URL.revokeObjectURL(a.href);
-    console.log("ini models:");
-    console.log(models);
   });
 
 
@@ -637,8 +631,6 @@ function eventHandler() {
 
       // parse JSON
       const models = JSON.parse(e.target.result);
-      console.log("hasil load:");
-      console.log(models);
       // load models
       container.renderOrder = models.renderOrder;
       let loadedPoly = new Polygon();
@@ -657,7 +649,7 @@ function eventHandler() {
       models.rectangles.forEach((rectangle) => {
         const x = rectangle.data[0], y = rectangle.data[1];
         const width = rectangle.data[6] - x;
-        const height = rectangle.data[13] - y;
+        const height = y - rectangle.data[13];
         const color = retrieveColor(rectangle.data);
         container.rectangles.push(new Rectangle(x, y, width, height, [...color[0], ...color[1], ...color[2], ...color[5]]));
       });
