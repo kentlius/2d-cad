@@ -65,7 +65,6 @@ export class Polygon {
     let orientation = 0
     let tempOrientation = 0
 
-    console.log("n: " + n)
     if (n <= 3) {
       return this.data;
     } else {
@@ -98,8 +97,8 @@ export class Polygon {
   }
 
   render(gl, convexHull) {
-    console.log("ini ori" , this.data)
-    console.log("ini hull", this.convexHull())
+    // console.log("ini ori" , this.data)
+    // console.log("ini hull", this.convexHull())
     if (convexHull){
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.convexHull()), gl.STATIC_DRAW);
     } else{
