@@ -17,7 +17,7 @@ export class Square {
       ]
     }
 
-    // SEMENTARA : UPDATENYA NYESUAIIN SUMBU X
+    // NGUBAH x2 dan y2 SESUAI SUMBU X
     updateVertex(x) {
       this.data[6] = x
       this.data[18] = x
