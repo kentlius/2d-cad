@@ -105,6 +105,25 @@ export class Square {
     }
   }
 
+  touch(x, y) {
+    return x >= this.x1 && x <= this.x2 && y <= this.y1 && y >= this.y2;
+  }
+
+  midpoint(){
+    return [(this.x1 + this.x2)/2, (this.y1 + this.y2)/2]
+  }
+
+  translate(x, y) {
+    this.x1 += x;
+    this.x2 += x;
+    this.y1 += y;
+    this.y2 += y;
+    for (let i = 0; i < this.data.length; i += 6) {
+      this.data[i] += x;
+      this.data[i + 1] += y;
+    }
+  }
+
   render(gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, 6);

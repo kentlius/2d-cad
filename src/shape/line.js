@@ -34,6 +34,28 @@ export class Line {
     this.data[i+4] = color[2];
     this.data[i+5] = color[3];
   }
+
+  touch(x, y){
+    let x1 = this.data[0];
+    let y1 = this.data[1];
+    let x2 = this.data[6];
+    let y2 = this.data[7];
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+    let d = Math.abs(dy * x - dx * y + x2 * y1 - y2 * x1) / Math.sqrt(dx * dx + dy * dy);
+    return d < this.acceptedRadius;
+  }
+
+  midpoint(){
+    return [(this.data[0] + this.data[6])/2, (this.data[1] + this.data[7])/2];
+  }
+
+  translate(dx, dy){
+    this.data[0] += dx;
+    this.data[1] += dy;
+    this.data[6] += dx;
+    this.data[7] += dy;
+  }
   
   render(gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);

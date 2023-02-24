@@ -14,26 +14,32 @@ let currentColor = [0, 0, 0, 1];
 let container = new Container();
 let mouseX = 0;
 let mouseY = 0;
+let previoustranslateX = 0;
+let previoustranslateY = 0;
 
 let newLine = -1;
 let isLineHover = false;
 let lineDragged = -1;
 let lineVertexDragged = -1
+let selectedLine = -1;
 
 let newSquare = -1;
 let isSquareHover = false;
 let squareDragged = -1;
 let squareVertexDragged = -1
+let selectedSquare = -1;
 
 let newRect = -1;
 let isRectHover = false;
 let rectDragged = -1;
 let rectVertexDragged = -1
+let selectedRect = -1;
 
 let newPolygon = -1;
 let isPolygonHover = false;
 let polygonDragged = -1;
 let polygonVertexDragged = -1
+let selectedPolygon = -1;
 
 function renderCanvas() {
   clearCanvas();
@@ -167,6 +173,50 @@ function changeColor(shapeType, idxOnContainer, idx) {
   renderCanvas();
 }
 
+// -----------------TRANSFORMATION HANDLER----------------- //
+function changeTranslateValue(shapeType, idxOnContainer) {
+  switch (shapeType) {
+    case 1: // line
+      document.querySelector("#x-axis-translation").disabled = false;
+      document.querySelector("#y-axis-translation").disabled = false;
+      document.querySelector("#x-axis-translation").value = container.lines[idxOnContainer].midpoint()[0];
+      document.querySelector("#y-axis-translation").value = container.lines[idxOnContainer].midpoint()[1];
+      previoustranslateX = container.lines[idxOnContainer].midpoint()[0];
+      previoustranslateY = container.lines[idxOnContainer].midpoint()[1];
+      break;
+    case 2: // square
+      document.querySelector("#x-axis-translation").disabled = false;
+      document.querySelector("#y-axis-translation").disabled = false;
+      document.querySelector("#x-axis-translation").value = container.squares[idxOnContainer].midpoint()[0];
+      document.querySelector("#y-axis-translation").value = container.squares[idxOnContainer].midpoint()[1];
+      previoustranslateX = container.squares[idxOnContainer].midpoint()[0];
+      previoustranslateY = container.squares[idxOnContainer].midpoint()[1];
+      break;
+    case 3: // rectangle
+      document.querySelector("#x-axis-translation").disabled = false;
+      document.querySelector("#y-axis-translation").disabled = false;
+      document.querySelector("#x-axis-translation").value = container.rectangles[idxOnContainer].midpoint()[0];
+      document.querySelector("#y-axis-translation").value = container.rectangles[idxOnContainer].midpoint()[1];
+      previoustranslateX = container.rectangles[idxOnContainer].midpoint()[0];
+      previoustranslateY = container.rectangles[idxOnContainer].midpoint()[1];
+      break;
+    case 4: // polygon
+      document.querySelector("#x-axis-translation").disabled = false;
+      document.querySelector("#y-axis-translation").disabled = false;
+      document.querySelector("#x-axis-translation").value = container.polygons[idxOnContainer].midpoint()[0];
+      document.querySelector("#y-axis-translation").value = container.polygons[idxOnContainer].midpoint()[1];
+      previoustranslateX = container.polygons[idxOnContainer].midpoint()[0];
+      previoustranslateY = container.polygons[idxOnContainer].midpoint()[1];
+      break;
+    default:
+      document.querySelector("#x-axis-translation").disabled = true;
+      document.querySelector("#y-axis-translation").disabled = true;
+      document.querySelector("#x-axis-translation").value = 0;
+      document.querySelector("#y-axis-translation").value = 0;
+      break;
+  }
+}
+
 // -----------------LINE HANDLER----------------- //
 function lineClickHandler(event) {
   const { x, y } = recordMouse(event);
@@ -195,6 +245,17 @@ function lineMoveHandler(event) {
   }
   renderCanvas();
 
+}
+
+function lineSelectHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.lines.length; i++) {
+    if (container.lines[i].touch(x, y)) {
+      selectedLine = i;
+      changeTranslateValue(1, i);
+      break;
+    }
+  }
 }
 
 function lineDragenterHandler(event) {
@@ -254,6 +315,17 @@ function squareMoveHandler(event) {
     container.squares[newSquare].updateVertex(30,x);
   }
   renderCanvas();
+}
+
+function squareSelectHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.squares.length; i++) {
+    if (container.squares[i].touch(x, y)) {
+      selectedSquare = i;
+      changeTranslateValue(2, i);
+      break;
+    }
+  }
 }
 
 function squareDragenterHandler(event) {
@@ -317,6 +389,17 @@ function rectangleMoveHandler(event) {
   renderCanvas();
 }
 
+function rectangleSelectHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.rectangles.length; i++) {
+    if (container.rectangles[i].touch(x, y)) {
+      selectedRect = i;
+      changeTranslateValue(3, i);
+      break;
+    }
+  }
+}
+
 function rectangleDragenterHandler(event) {
   const { x, y } = recordMouse(event);
   for (let i = 0; i < container.rectangles.length; i++) {
@@ -372,6 +455,17 @@ function polygonMoveHandler(event) {
     container.polygons[newPolygon].updateVertex(container.polygons[newPolygon].data.length -6, x, y);
   }
   renderCanvas();
+}
+
+function polygonSelectHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.polygons.length; i++) {
+    if (container.polygons[i].touch(x, y)) {
+      selectedPolygon = i;
+      changeTranslateValue(4, i);
+      break;
+    }
+  }
 }
 
 function polygonDragenterHandler(event) {
@@ -480,17 +574,26 @@ function eventHandler() {
       // change color
       changeColor(shapeType, idxOnContainer, idx);
 
+      // translate
+      if(shapeType == 0) {
+        changeTranslateValue(shapeType, idxOnContainer);
+      }
+
       // Change shape's vertex by dragging
 
       if (document.querySelector("#line").checked) {
+        lineSelectHandler(event);
         lineDragenterHandler(event);
       } else if (document.querySelector("#square").checked) {
+        squareSelectHandler(event);
         squareDragenterHandler(event);
       }
       else if (document.querySelector("#rectangle").checked) {
+        rectangleSelectHandler(event);
         rectangleDragenterHandler(event);
       }
       else if (document.querySelector("#polygon").checked) {
+        polygonSelectHandler(event);
         polygonDragenterHandler(event);
       }
     }
@@ -566,6 +669,42 @@ function eventHandler() {
         }
       }
     }
+  });
+
+  const translateX = document.querySelector("#x-axis-translation");
+  translateX.addEventListener("input", () => {
+    if (document.querySelector("#line").checked) {
+      container.lines[selectedLine].translate(translateX.value - previoustranslateX, 0);
+      previoustranslateX = translateX.value;
+    } else if (document.querySelector("#square").checked) {
+      container.squares[selectedSquare].translate(translateX.value - previoustranslateX, 0);
+      previoustranslateX = translateX.value;
+    } else if (document.querySelector("#rectangle").checked) {
+      container.rectangles[selectedRect].translate(translateX.value - previoustranslateX, 0);
+      previoustranslateX = translateX.value;
+    } else if (document.querySelector("#polygon").checked) {
+      container.polygons[selectedPolygon].translate(translateX.value - previoustranslateX, 0);
+      previoustranslateX = translateX.value;
+    }
+    renderCanvas();
+  });
+
+  const translateY = document.querySelector("#y-axis-translation");
+  translateY.addEventListener("input", () => {
+    if (document.querySelector("#line").checked) {
+      container.lines[selectedLine].translate(0, translateY.value - previoustranslateY);
+      previoustranslateY = translateY.value;
+    } else if (document.querySelector("#square").checked) {
+      container.squares[selectedSquare].translate(0, translateY.value - previoustranslateY);
+      previoustranslateY = translateY.value;
+    } else if (document.querySelector("#rectangle").checked) {
+      container.rectangles[selectedRect].translate(0, translateY.value - previoustranslateY);
+      previoustranslateY = translateY.value;
+    } else if (document.querySelector("#polygon").checked) {
+      container.polygons[selectedPolygon].translate(0, translateY.value - previoustranslateY);
+      previoustranslateY = translateY.value;
+    }
+    renderCanvas();
   });
 
   const clearbtn = document.querySelector("#clear");

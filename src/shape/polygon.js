@@ -94,6 +94,46 @@ export class Polygon {
     return hullVertices
   }
 
+  touch(x, y) {
+    let n = this.data.length / 6;
+    let hullVertices = this.convexHull();
+    let hullVerticesLength = hullVertices.length / 6;
+
+    if (n <= 3) {
+      for (let i = 0; i < n; i++) {
+        if (Math.abs(this.data[i * 6] - x) < this.acceptedRadius && Math.abs(this.data[i * 6 + 1] - y) < this.acceptedRadius) {
+          return true;
+        }
+      }
+    } else {
+      for (let i = 0; i < hullVerticesLength; i++) {
+        if (Math.abs(hullVertices[i * 6] - x) < this.acceptedRadius && Math.abs(hullVertices[i * 6 + 1] - y) < this.acceptedRadius) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  midpoint() {
+    let n = this.data.length / 6;
+    let x = 0;
+    let y = 0;
+    for (let i = 0; i < n; i++) {
+      x += this.data[i * 6];
+      y += this.data[i * 6 + 1];
+    }
+    return [x / n, y / n];
+  }
+
+  translate(dx, dy) {
+    let n = this.data.length / 6;
+    for (let i = 0; i < n; i++) {
+      this.data[i * 6] += dx;
+      this.data[i * 6 + 1] += dy;
+    }
+  }
+
   render(gl, convexHull) {
     let n = 0
     
