@@ -3,7 +3,7 @@ export class Square {
     this.x1 = x;
     this.x2 = x + size;
     this.y1 = y;
-    this.y2 = y + size;
+    this.y2 = y - size;
     this.acceptedRadius = 0.1;
 
     // prettier-ignore

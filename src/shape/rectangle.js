@@ -3,7 +3,7 @@ export class Rectangle {
     this.x1 = x;
     this.x2 = x + width;
     this.y1 = y;
-    this.y2 = y + height;
+    this.y2 = y - height;
     this.acceptedRadius = 0.1;
 
     // prettier-ignore

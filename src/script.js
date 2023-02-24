@@ -153,13 +153,15 @@ function changeColor(shapeType, idxOnContainer, idx) {
       container.lines[idxOnContainer].updateColor(idx, currentColor);
       break;
     case 2: // square
-      container.squares[idxOnContainer].updateColor(idx, currentColor); // TODO
+      container.squares[idxOnContainer].updateColor(idx, currentColor);
       break;
     case 3: // rectangle
-      container.rectangles[idxOnContainer].updateColor(idx, currentColor); // TODO
+      container.rectangles[idxOnContainer].updateColor(idx, currentColor);
+      console.log("ini rect:");
+      console.log(container.rectangles[idxOnContainer]);
       break;
     case 4: // polygon
-      container.polygons[idxOnContainer].updateColor(idx, currentColor); // TODO
+      container.polygons[idxOnContainer].updateColor(idx, currentColor);
       break;
     default:
       break;
@@ -300,7 +302,7 @@ function rectangleClickHandler(event) {
   }
   else{
     let rectangle_idx = container.rectangles.length - 1;
-    container.rectangles[rectangle_idx].updateVertex(6,x, y);
+    container.rectangles[rectangle_idx].updateVertex(30, x, y);
     newRect = -1;
     isRectHover = false;
   }
@@ -312,7 +314,7 @@ function rectangleMoveHandler(event) {
   if(!isRectHover) {
     return;
   } else if(newRect !== -1) {
-    container.rectangles[newRect].updateVertex(6,x, y);
+    container.rectangles[newRect].updateVertex(30, x, y);
   }
   renderCanvas();
 }
@@ -590,6 +592,8 @@ function eventHandler() {
   );
   const saveBtn = document.querySelector("#save");
   saveBtn.addEventListener("click", () => {
+    console.log("ini container:");
+    console.log(container);
     // define models
     const models = {
       renderOrder : container.renderOrder,
@@ -608,6 +612,7 @@ function eventHandler() {
     a.download = "models.json";
     a.click();
     URL.revokeObjectURL(a.href);
+    console.log("ini models:");
     console.log(models);
   });
 
@@ -625,33 +630,36 @@ function eventHandler() {
       function retrieveColor(data) {
         let color = [];
         for (let i = 0; i < data.length; i+=6) {
-          color.push(data[i+2], data[i+3], data[i+4], data[i+5]);
+          color.push([data[i+2], data[i+3], data[i+4], data[i+5]]);
         }
         return color;
       }
 
       // parse JSON
       const models = JSON.parse(e.target.result);
+      console.log("hasil load:");
       console.log(models);
       // load models
       container.renderOrder = models.renderOrder;
-      const modelColor = [];
       let loadedPoly = new Polygon();
 
       models.lines.forEach((line) => {
         const x1 = line.data[0], y1 = line.data[1], x2 = line.data[6], y2 = line.data[7];
-        container.lines.push(new Line(x1, y1, x2, y2, retrieveColor(line.data)));
+        const color = retrieveColor(line.data);
+        container.lines.push(new Line(x1, y1, x2, y2, [...color[0], ...color[1]]));
       });
       models.squares.forEach((square) => {
         const x = square.data[0], y = square.data[1];
-        const size = Math.abs(x - square.data[6])
-        container.squares.push(new Square(x, y, size, retrieveColor(square.data)));
+        const size = square.data[6] - x;
+        const color = retrieveColor(square.data);
+        container.squares.push(new Square(x, y, size, [...color[0], ...color[1], ...color[2], ...color[5]]));
       });
       models.rectangles.forEach((rectangle) => {
         const x = rectangle.data[0], y = rectangle.data[1];
-        const width = Math.abs(x - rectangle.data[6]);
-        const height = Math.abs(y- rectangle.data[13]);
-        container.rectangles.push(new Rectangle(x, y, width, height, retrieveColor(rectangle.data)));
+        const width = rectangle.data[6] - x;
+        const height = rectangle.data[13] - y;
+        const color = retrieveColor(rectangle.data);
+        container.rectangles.push(new Rectangle(x, y, width, height, [...color[0], ...color[1], ...color[2], ...color[5]]));
       });
       models.polygons.forEach((polygon) => {
         loadedPoly.data=[...polygon.data];
