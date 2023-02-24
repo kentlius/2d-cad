@@ -7,7 +7,7 @@ import { Polygon } from "./shape/polygon.js";
 let canvas = document.querySelector("#canvas");
 let gl = canvas.getContext("webgl");
 
-// color data
+// color models
 let currentColor = [0, 0, 0, 1];
 
 // Shape data
@@ -239,8 +239,7 @@ function squareClickHandler(event) {
     isSquareHover = true
   }
   else{
-    let square_idx = container.squares.length - 1;
-    container.squares[square_idx].updateVertex(30,x, y);
+    container.squares[newSquare].updateVertex(30,x);
     newSquare = -1;
     isSquareHover = false;
   }
@@ -545,7 +544,7 @@ function eventHandler() {
     });
 
   window.addEventListener("keypress", function (event) {
-    if (document.querySelector("#draw").checked){
+    if (document.querySelector("#draw").checked){   // draw mode
       if (isPolygonHover){
         if (event.key == "Enter") {
           event.preventDefault();
@@ -554,7 +553,7 @@ function eventHandler() {
           renderCanvas();
         }
       }
-    }else{
+    }else{                                          // edit mode
       if (event.key == "Enter") {
         let idx_poligon = -1;
         for (let i = 0; i < container.polygons.length; i++) {
@@ -589,6 +588,83 @@ function eventHandler() {
     renderCanvas();
   }
   );
+  const saveBtn = document.querySelector("#save");
+  saveBtn.addEventListener("click", () => {
+    // define models
+    const models = {
+      renderOrder : container.renderOrder,
+      lines       : container.lines,
+      squares     : container.squares,
+      rectangles  : container.rectangles,
+      polygons    : container.polygons
+    };
+    // parse to JSON
+    let content = JSON.stringify(models);
+
+    // create BLOB to store models
+    const a = document.createElement("a");
+    const blob = new Blob([content], { type: "json" });
+    a.href = URL.createObjectURL(blob);
+    a.download = "models.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  const loadFile = document.querySelector('#load-src');
+
+  loadFile.addEventListener('change', (e) => {
+    // prevent reloading page
+    e.preventDefault();
+
+    if (!loadFile.value.length) return;
+
+    // get file
+    let reader = new FileReader();
+	  reader.onload = (e) => {
+      // parse JSON
+      const models = JSON.parse(e.target.result);
+      console.log(models);
+      // load models
+      container.renderOrder = models.renderOrder;
+      const modelColor = [];
+      let loadedPoly = new Polygon();
+
+      models.lines.forEach((line) => {
+        for (let i = 0; i < line.data.length; i+=6) {
+          modelColor.push(line.data[i+2], line.data[i+3], line.data[i+4], line.data[i+5]);
+        }
+        const x1 = line.data[0], y1 = line.data[1], x2 = line.data[6], y2 = line.data[7];
+        container.lines.push(new Line(x1, y1, x2, y2, modelColor));
+      });
+      models.squares.forEach((square) => {
+        for (let i = 0; i < square.data.length; i+=6) {
+          modelColor.push(square.data[i+2], square.data[i+3], square.data[i+4], square.data[i+5]);
+        }
+        const x = square.data[0], y = square.data[1];
+        const size = Math.abs(x - square.data[6])
+        container.squares.push(new Square(x, y, size, modelColor));
+      });
+      models.rectangles.forEach((rectangle) => {
+        for (let i = 0; i < rectangle.data.length; i+=6) {
+          modelColor.push(rectangle.data[i+2], rectangle.data[i+3], rectangle.data[i+4], rectangle.data[i+5]);
+        }
+        const x = rectangle.data[0], y = rectangle.data[1];
+        const width = Math.abs(x - rectangle.data[6]);
+        const height = Math.abs(y- rectangle.data[13]);
+        container.rectangles.push(new Rectangle(x, y, width, height, modelColor));
+      });
+      models.polygons.forEach((polygon) => {
+        loadedPoly.data=[...polygon.data];
+        container.polygons.push(loadedPoly);
+      });
+      // render canvas
+      renderCanvas();
+    }
+
+    reader.readAsText(loadFile.files[0]);
+
+  });
+
 }
 
 window.onload = main;

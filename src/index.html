@@ -74,13 +74,8 @@
         </div>
         <div id="file-tool">
           <button id="save">Save</button>
-          <input type="file" id="load_src" style="display: none" />
-          <button
-            id="load"
-            onclick="document.getElementById('load_src').click()"
-          >
-            Load
-          </button>
+          <input type="file" id="load-src" accept=".json,application/json" style="display: none" />
+          <button id="load" onclick="document.getElementById('load-src').click()">Load</button>
         </div>
         <div id="user-guide">
           <div id="help" class="button">Help</div>
