@@ -113,6 +113,11 @@ const main = () => {
 function resetCanvas() {
   container.clear();
   clearCanvas();
+  container.polygons = []
+  container.renderOrder = []
+  container.squares = []
+  container.rectangles = []
+  container.lines = []
 }
 
 function clearCanvas() {
