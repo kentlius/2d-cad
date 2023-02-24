@@ -17,12 +17,18 @@ let mouseY = 0;
 
 let newLine = -1;
 let isLineHover = false;
+let lineDragged = -1;
+let lineVertexDragged = -1
 
 let newSquare = -1;
 let isSquareHover = false;
+let squareDragged = -1;
+let squareVertexDragged = -1
 
 let newRect = -1;
 let isRectHover = false;
+let rectDragged = -1;
+let rectVertexDragged = -1
 
 let newPolygon = -1;
 let isPolygonHover = false;
@@ -168,7 +174,7 @@ function lineClickHandler(event) {
     newLine = container.lines.length - 1;
     isLineHover = true;
   } else {                // ada line yang sedang dibentuk
-    container.lines[newLine].updateVertex(x, y);
+    container.lines[newLine].updateVertex(6,x, y);
     newLine = -1;
     isLineHover = false;
   }
@@ -180,10 +186,34 @@ function lineMoveHandler(event) {
   if(!isLineHover) {
     return;
   } else if(newLine !== -1) {
-    container.lines[newLine].updateVertex(x, y);
+    container.lines[newLine].updateVertex(6,x, y);
   }
   renderCanvas();
 
+}
+
+function lineDragenterHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.lines.length; i++) {
+    lineVertexDragged = container.lines[i].touchVertex(x, y);
+    if (lineVertexDragged !== -1) {
+      lineDragged = i
+      break
+    }
+  }
+}
+
+function lineDragoverHandler(event){
+  const { x, y } = recordMouse(event);
+  if (lineDragged !== -1){
+    container.lines[lineDragged].updateVertex(lineVertexDragged, x, y);
+  }
+  renderCanvas();
+}
+
+function lineDragleaveHandler(event){
+  lineDragged = -1;
+  lineVertexDragged = -1;
 }
 
 
@@ -205,7 +235,7 @@ function squareClickHandler(event) {
   }
   else{
     let square_idx = container.squares.length - 1;
-    container.squares[square_idx].updateVertex(x, y);
+    container.squares[square_idx].updateVertex(30,x, y);
     newSquare = -1;
     isSquareHover = false;
   }
@@ -217,9 +247,33 @@ function squareMoveHandler(event) {
   if(!isSquareHover) {
     return;
   } else if(newSquare !== -1) {
-    container.squares[newSquare].updateVertex(x);
+    container.squares[newSquare].updateVertex(30,x);
   }
   renderCanvas();
+}
+
+function squareDragenterHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.squares.length; i++) {
+    squareVertexDragged = container.squares[i].touchVertex(x, y);
+    if (squareVertexDragged !== -1) {
+      squareDragged = i
+      break
+    }
+  }
+}
+
+function squareDragoverHandler(event){
+  const { x, y } = recordMouse(event);
+  if (squareDragged !== -1){
+    container.squares[squareDragged].updateVertex(squareVertexDragged, x, y);
+  }
+  renderCanvas();
+}
+
+function squareDragleaveHandler(event){
+  squareDragged = -1;
+  squareVertexDragged = -1;
 }
 
 
@@ -242,7 +296,7 @@ function rectangleClickHandler(event) {
   }
   else{
     let rectangle_idx = container.rectangles.length - 1;
-    container.rectangles[rectangle_idx].updateVertex(x, y);
+    container.rectangles[rectangle_idx].updateVertex(6,x, y);
     newRect = -1;
     isRectHover = false;
   }
@@ -254,9 +308,33 @@ function rectangleMoveHandler(event) {
   if(!isRectHover) {
     return;
   } else if(newRect !== -1) {
-    container.rectangles[newRect].updateVertex(x, y);
+    container.rectangles[newRect].updateVertex(6,x, y);
   }
   renderCanvas();
+}
+
+function rectangleDragenterHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.rectangles.length; i++) {
+    rectVertexDragged = container.rectangles[i].touchVertex(x, y);
+    if (rectVertexDragged !== -1) {
+      rectDragged = i
+      break
+    }
+  }
+}
+
+function rectangleDragoverHandler(event){
+  const { x, y } = recordMouse(event);
+  if (rectDragged !== -1){
+    container.rectangles[rectDragged].updateVertex(rectVertexDragged, x, y);
+  }
+  renderCanvas();
+}
+
+function rectangleDragleaveHandler(event){
+  rectDragged = -1;
+  rectVertexDragged = -1;
 }
 
 
@@ -287,7 +365,7 @@ function polygonMoveHandler(event) {
   if(!isPolygonHover) {
     return;
   } else if(newPolygon !== -1) {
-    container.polygons[newPolygon].updateVertex(x, y);
+    container.polygons[newPolygon].updateVertex(container.polygons[newPolygon].data.length -6, x, y);
   }
   renderCanvas();
 }
@@ -306,7 +384,7 @@ function polygonDragenterHandler(event) {
 function polygonDragoverHandler(event){
   const { x, y } = recordMouse(event);
   if (polygonDragged !== -1){
-    container.polygons[polygonDragged].updateVertexAtIndex(polygonVertexDragged, x, y);
+    container.polygons[polygonDragged].updateVertex(polygonVertexDragged, x, y);
   }
   renderCanvas();
 }
@@ -400,8 +478,17 @@ function eventHandler() {
 
       // Change shape's vertex by dragging
 
-      // TODO : YANG ATAS GANTI IF CHECKEDSQUARE REC DLL
-      polygonDragenterHandler(event);
+      if (document.querySelector("#line").checked) {
+        lineDragenterHandler(event);
+      } else if (document.querySelector("#square").checked) {
+        squareDragenterHandler(event);
+      }
+      else if (document.querySelector("#rectangle").checked) {
+        rectangleDragenterHandler(event);
+      }
+      else if (document.querySelector("#polygon").checked) {
+        polygonDragenterHandler(event);
+      }
     }
   });
 
@@ -422,61 +509,35 @@ function eventHandler() {
       }
     } else if (document.querySelector("#edit").checked) {    // edit mode
 
-      // TODO : YANG ATAS GANTI IF CHECKEDSQUARE REC DLL
-      polygonDragoverHandler(event);
+      // MOVE VERTEX
+        if (document.querySelector("#line").checked) {
+          lineDragoverHandler(event);
+        } else if (document.querySelector("#square").checked) {
+          squareDragoverHandler(event);
+        }
+        else if (document.querySelector("#rectangle").checked) {
+          rectangleDragoverHandler(event);
+        }
+        else if (document.querySelector("#polygon").checked) {
+          polygonDragoverHandler(event);
+        }
     }
   })
 
   canvas.addEventListener("mouseup", function (event) {
 
-    // TODO : YANG ATAS GANTI IF CHECKEDSQUARE REC DLL
-    polygonDragleaveHandler(event);
+    if (document.querySelector("#line").checked) {
+      lineDragleaveHandler(event);
+    } else if (document.querySelector("#square").checked) {
+      squareDragleaveHandler(event);
+    }
+    else if (document.querySelector("#rectangle").checked) {
+      rectangleDragleaveHandler(event);
+    }
+    else if (document.querySelector("#polygon").checked) {
+      polygonDragleaveHandler(event);
+    }
     });
-
-  // canvas.addEventListener("dragenter", function (event) {
-  //   console.log("masuk?")
-  //   if (document.querySelector("#edit").checked) {
-  //     if (document.querySelector("#line").checked) {
-  //       lineDragenterHandler(event);
-  //     } else if (document.querySelector("#square").checked) {
-  //       squareDragenterHandler(event);
-  //     } else if (document.querySelector("#rectangle").checked) {
-  //       rectangleDragenterHandler(event);
-  //     } else if (document.querySelector("#polygon").checked) {
-  //       polygonDragenterHandler(event);
-  //     }
-  //   }
-  // })
-
-  // canvas.addEventListener("dragover", function (event) {
-
-  //   if (document.querySelector("#edit").checked) {
-  //     if (document.querySelector("#line").checked) {
-  //       lineDragoverHandler(event);
-  //     } else if (document.querySelector("#square").checked) {
-  //       squareDragoverHandler(event);
-  //     } else if (document.querySelector("#rectangle").checked) {
-  //       rectangleDragoverHandler(event);
-  //     } else if (document.querySelector("#polygon").checked) {
-  //       polygonDragoverHandler(event);
-  //     }
-  //   }
-  // })
-
-  // canvas.addEventListener("dragleave", function (event) {
-
-  //   if (document.querySelector("#edit").checked) {
-  //     if (document.querySelector("#line").checked) {
-  //       lineDragleaveHandler(event);
-  //     } else if (document.querySelector("#square").checked) {
-  //       squareDragleaveHandler(event);
-  //     } else if (document.querySelector("#rectangle").checked) {
-  //       rectangleDragleaveHandler(event);
-  //     } else if (document.querySelector("#polygon").checked) {
-  //       polygonDragleaveHandler(event);
-  //     }
-  //   }
-  // })
 
   window.addEventListener("keypress", function (event) {
     if (document.querySelector("#draw").checked){

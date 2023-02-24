@@ -17,13 +17,21 @@ export class Rectangle {
     ]
   }
 
-  updateVertex(x, y) {
-    this.data[6] = x
-    this.data[18] = x
-    this.data[30] = x
-    this.data[13] = y
-    this.data[25] = y
-    this.data[31] = y
+  updateVertex(idx, x, y) {
+    // Top right, change x2 y1
+    if (idx == 6){
+      this.data[6] = x, this.data[18] = x, this.data[30] = x, this.x2 = x
+      this.data[1] = y, this.data[7] = y, this.data[19] = y, this.y1 = y
+    } else if (idx == 0){ // Top left change x1 y1
+      this.data[0] = x, this.data[12] = x, this.data[24] = x, this.x1 = x
+      this.data[1] = y, this.data[7] = y, this.data[19] = y, this.y1 = y
+    } else if (idx == 12){ // Bottom left change x1 y2
+      this.data[0] = x, this.data[12] = x, this.data[24] = x, this.x1 = x
+      this.data[13] = y, this.data[25] = y, this.data[31] = y, this.y2 = y
+    } else if (idx == 30){ // Bottom right change x2 y2
+      this.data[6] = x, this.data[18] = x, this.data[30] = x, this.x2 = x
+      this.data[13] = y, this.data[25] = y, this.data[31] = this.y2 = y
+    }
   }
 
   touchVertex(x, y){
