@@ -633,7 +633,6 @@ function eventHandler() {
       const models = JSON.parse(e.target.result);
       // load models
       container.renderOrder = models.renderOrder;
-      let loadedPoly = new Polygon();
 
       models.lines.forEach((line) => {
         const x1 = line.data[0], y1 = line.data[1], x2 = line.data[6], y2 = line.data[7];
@@ -654,6 +653,7 @@ function eventHandler() {
         container.rectangles.push(new Rectangle(x, y, width, height, [...color[0], ...color[1], ...color[2], ...color[5]]));
       });
       models.polygons.forEach((polygon) => {
+        let loadedPoly = new Polygon();
         loadedPoly.data=[...polygon.data];
         container.polygons.push(loadedPoly);
       });
