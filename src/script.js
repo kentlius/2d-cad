@@ -608,10 +608,11 @@ function eventHandler() {
     a.download = "models.json";
     a.click();
     URL.revokeObjectURL(a.href);
+    console.log(models);
   });
 
-  const loadFile = document.querySelector('#load-src');
 
+  const loadFile = document.querySelector('#load-src');
   loadFile.addEventListener('change', (e) => {
     // prevent reloading page
     e.preventDefault();
@@ -621,6 +622,14 @@ function eventHandler() {
     // get file
     let reader = new FileReader();
 	  reader.onload = (e) => {
+      function retrieveColor(data) {
+        let color = [];
+        for (let i = 0; i < data.length; i+=6) {
+          color.push(data[i+2], data[i+3], data[i+4], data[i+5]);
+        }
+        return color;
+      }
+
       // parse JSON
       const models = JSON.parse(e.target.result);
       console.log(models);
@@ -630,28 +639,19 @@ function eventHandler() {
       let loadedPoly = new Polygon();
 
       models.lines.forEach((line) => {
-        for (let i = 0; i < line.data.length; i+=6) {
-          modelColor.push(line.data[i+2], line.data[i+3], line.data[i+4], line.data[i+5]);
-        }
         const x1 = line.data[0], y1 = line.data[1], x2 = line.data[6], y2 = line.data[7];
-        container.lines.push(new Line(x1, y1, x2, y2, modelColor));
+        container.lines.push(new Line(x1, y1, x2, y2, retrieveColor(line.data)));
       });
       models.squares.forEach((square) => {
-        for (let i = 0; i < square.data.length; i+=6) {
-          modelColor.push(square.data[i+2], square.data[i+3], square.data[i+4], square.data[i+5]);
-        }
         const x = square.data[0], y = square.data[1];
         const size = Math.abs(x - square.data[6])
-        container.squares.push(new Square(x, y, size, modelColor));
+        container.squares.push(new Square(x, y, size, retrieveColor(square.data)));
       });
       models.rectangles.forEach((rectangle) => {
-        for (let i = 0; i < rectangle.data.length; i+=6) {
-          modelColor.push(rectangle.data[i+2], rectangle.data[i+3], rectangle.data[i+4], rectangle.data[i+5]);
-        }
         const x = rectangle.data[0], y = rectangle.data[1];
         const width = Math.abs(x - rectangle.data[6]);
         const height = Math.abs(y- rectangle.data[13]);
-        container.rectangles.push(new Rectangle(x, y, width, height, modelColor));
+        container.rectangles.push(new Rectangle(x, y, width, height, retrieveColor(rectangle.data)));
       });
       models.polygons.forEach((polygon) => {
         loadedPoly.data=[...polygon.data];
