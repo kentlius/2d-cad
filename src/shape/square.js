@@ -19,7 +19,6 @@ export class Square {
 
     // NGUBAH x dan y nya sesuai sumbu x
     updateVertex(idx, x) {
-      console.log(idx,x)
       // Top Right, change x2 y2
       if (idx == 6){
         this.data[6] = x, this.data[18] = x, this.data[30] = x, 
