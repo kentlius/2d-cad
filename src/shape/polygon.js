@@ -4,8 +4,19 @@ export class Polygon {
     this.acceptedRadius = 0.1;
   }
 
+  isVertexAlreadyExist(x, y) {
+    for (let i = 0; i < this.data.length; i += 6) {
+      if (this.data[i] == x && this.data[i] == y) {
+        return true;
+      }
+    }
+    return false
+  }
+
   addVertex(x, y, colors) {
+    if (!this.isVertexAlreadyExist(x, y)) {
     this.data.push(x, y, colors[0], colors[1], colors[2], colors[3]);
+    }
   }
 
   updateVertex(idx,x,y){
@@ -37,8 +48,64 @@ export class Polygon {
     this.data[i+5] = color[3];
   }
 
-  render(gl) {
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
+  orientation(a, b, c) { 
+    // Untuk mementukan arah sudut yang dibentuk oleh titik p, q, dan r.
+    // referensi: https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/amp/
+    // Lebih besar hasilnya, maka sudut yang dibentuk semakin berlawanan arah jarum jam
+
+    return (b.y - a.y) * (c.x - b.x) - (b.x - a.x) * (c.y - b.y); 
+  } 
+
+  convexHull() {
+    // Menggunakan algoritma Jarvis March
+    // referensi: https://www.geeksforgeeks.org/convex-hull-using-jarvis-algorithm-or-wrapping/amp/
+    
+    let n = this.data.length / 6;
+    let hullVertices = []
+    let orientation = 0
+    let tempOrientation = 0
+
+    console.log("n: " + n)
+    if (n <= 3) {
+      return this.data;
+    } else {
+      // Mencari titik dengan nilai x paling kiri
+      let leftMost = 0;
+      for (let i = 1; i < n; i++) {
+        if (this.data[i * 6] < this.data[leftMost * 6]) {
+          leftMost = i;
+        }
+      } 
+
+      let p = leftMost;
+      let q = 0;
+      do {
+        // Mencari titik yang paling berorientasi searah jarum jam
+        orientation = 0
+        hullVertices.push(this.data[p * 6], this.data[p * 6 + 1], this.data[p * 6 + 2], this.data[p * 6 + 3], this.data[p * 6 + 4], this.data[p * 6 + 5]);
+        q = (p + 6) % n;
+        for (let i = 0; i < n; i++) {
+          tempOrientation = this.orientation({x: this.data[p * 6], y: this.data[p * 6 + 1]}, {x: this.data[i * 6], y: this.data[i * 6 + 1]}, {x: this.data[q * 6], y: this.data[q * 6 + 1]})
+          if (tempOrientation < 0) {
+            orientation = tempOrientation
+            q = i;
+          }
+        }
+        p = q;
+      } while (p != leftMost);
+    }
+    return hullVertices
+  }
+
+  render(gl, convexHull) {
+    console.log("ini ori" , this.data)
+    console.log("ini hull", this.convexHull())
+    if (convexHull){
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.convexHull()), gl.STATIC_DRAW);
+    } else{
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
+    }
+  
     if (this.data.length > 12) {
       gl.drawArrays(gl.TRIANGLE_FAN, 0, this.data.length / 6);
     }
