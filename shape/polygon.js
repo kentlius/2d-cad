@@ -80,13 +80,11 @@ export class Polygon {
       let q = 0;
       do {
         // Mencari titik yang paling berorientasi searah jarum jam
-        orientation = 0
         hullVertices.push(this.data[p * 6], this.data[p * 6 + 1], this.data[p * 6 + 2], this.data[p * 6 + 3], this.data[p * 6 + 4], this.data[p * 6 + 5]);
         q = (p+1) % n;
         for (let i = 0; i < n; i++) {
           tempOrientation = this.orientation({x: this.data[p * 6], y: this.data[p * 6 + 1]}, {x: this.data[i * 6], y: this.data[i * 6 + 1]}, {x: this.data[q * 6], y: this.data[q * 6 + 1]})
           if (tempOrientation < 0) {
-            orientation = tempOrientation
             q = i;
           }
         }
@@ -97,8 +95,6 @@ export class Polygon {
   }
 
   render(gl, convexHull) {
-    // console.log("ini ori" , this.data)
-    // console.log("ini hull", this.convexHull())
     if (convexHull){
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.convexHull()), gl.STATIC_DRAW);
     } else{
