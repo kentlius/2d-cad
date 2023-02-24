@@ -17,14 +17,23 @@ export class Square {
       ]
     }
 
-    // NGUBAH x2 dan y2 SESUAI SUMBU X
-    updateVertex(x) {
-      this.data[6] = x
-      this.data[18] = x
-      this.data[30] = x
-      this.data[13] = this.y1 - (x - this.x1) 
-      this.data[25] = this.y1 - (x - this.x1)
-      this.data[31] = this.y1 - (x - this.x1)
+    // NGUBAH x dan y nya sesuai sumbu x
+    updateVertex(idx, x) {
+      console.log(idx,x)
+      // Top Right, change x2 y2
+      if (idx == 6){
+        this.data[6] = x, this.data[18] = x, this.data[30] = x, 
+        this.data[1] += x - this.x2, this.data[7] += x - this.x2, this.data[19] += x - this.x2, this.y2 += x - this.x2, this.x2 = x
+      } else if (idx == 0){ // Top left change x1 y1
+        this.data[0] = x, this.data[12] = x, this.data[24] = x, 
+        this.data[1] -= x - this.x1, this.data[7] -= x - this.x1, this.data[19] -= x - this.x1, this.y1 -= x - this.x1, this.x1 = x
+      } else if (idx == 12){ // Bottom left change x1 y2
+        this.data[0] = x, this.data[12] = x, this.data[24] = x, 
+        this.data[13] += x - this.x1, this.data[25] += x - this.x1, this.data[31] += x - this.x1, this.y1 += x - this.x1, this.x1 = x 
+      } else if (idx == 30){ // Bottom right change x2 y2
+        this.data[6] = x, this.data[18] = x, this.data[30] = x
+        this.data[13] -= x - this.x2, this.data[25] -= x - this.x2, this.data[31] -= x - this.x2, this.y1 -= x - this.x2, this.x2 = x
+      }
     }
 
     touchVertex(x, y){

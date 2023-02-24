@@ -8,12 +8,7 @@ export class Polygon {
     this.data.push(x, y, colors[0], colors[1], colors[2], colors[3]);
   }
 
-  updateVertex(x,y){
-    this.data[this.data.length - 6] = x;
-    this.data[this.data.length - 5] = y;
-  }
-
-  updateVertexAtIndex(idx,x,y){
+  updateVertex(idx,x,y){
     this.data[idx] = x;
     this.data[idx+1] = y;
   }

@@ -8,9 +8,15 @@ export class Line {
     this.acceptedRadius = 0.1;
   }
 
-  updateVertex(x, y) {
-    this.data[6] = x;
-    this.data[7] = y;
+  updateVertex(idx, x, y) {
+    //Update second vertex
+    if (idx == 6){
+      this.data[6] = x;
+      this.data[7] = y;
+    } else if (idx == 0){ // Update first vertex
+      this.data[0] = x;
+      this.data[1] = y;
+    }
   }
 
   touchVertex(x, y){
