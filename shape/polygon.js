@@ -95,13 +95,16 @@ export class Polygon {
   }
 
   render(gl, convexHull) {
+    let n = 0
+    
     if (convexHull){
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.convexHull()), gl.STATIC_DRAW);
+      let temp = this.convexHull()
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(temp), gl.STATIC_DRAW);
+      n = temp.length / 6;
     } else{
       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
+      n = this.data.length / 6;
     }
-
-    let n = convexHull? this.convexHull().length / 6 : this.data.length / 6;
 
     if (this.data.length > 12) {
       gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
