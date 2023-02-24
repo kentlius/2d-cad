@@ -13,6 +13,11 @@ export class Polygon {
     this.data[this.data.length - 5] = y;
   }
 
+  updateVertexAtIndex(idx,x,y){
+    this.data[idx] = x;
+    this.data[idx+1] = y;
+  }
+
   deleteLast(){
     this.data.splice(this.data.length - 6, 6);  
   }
@@ -22,7 +27,6 @@ export class Polygon {
   }
   
   touchVertex(x, y){
-    console.log("lokasi",x,y)
     for(let i = 0; i < this.data.length; i += 6){
       if(Math.abs(this.data[i] - x) < this.acceptedRadius && Math.abs(this.data[i+1] - y) < this.acceptedRadius){
         return i;

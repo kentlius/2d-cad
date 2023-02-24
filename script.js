@@ -26,6 +26,8 @@ let isRectHover = false;
 
 let newPolygon = -1;
 let isPolygonHover = false;
+let polygonDragged = -1;
+let polygonVertexDragged = -1
 
 function renderCanvas() {
   clearCanvas();
@@ -129,15 +131,12 @@ function clearCanvas() {
 function recordMouse(event) {
   let x = (event.offsetX / canvas.clientWidth) * 2 - 1;
   let y = (1 - event.offsetY / canvas.clientHeight) * 2 - 1;
-
-  console.log(x,y)
   return { x, y };
 }
 
 // -----------------COLOR HANDLER----------------- //
 function changeColor(shapeType, idxOnContainer, idx) {
   currentColor = getColor();
-  console.log(shapeType,idxOnContainer,idx)
   switch (shapeType) {
     case 1: // line
       container.lines[idxOnContainer].updateColor(idx, currentColor);
@@ -182,9 +181,9 @@ function lineMoveHandler(event) {
     return;
   } else if(newLine !== -1) {
     container.lines[newLine].updateVertex(x, y);
-    console.log("line moved")
   }
   renderCanvas();
+
 }
 
 
@@ -293,6 +292,32 @@ function polygonMoveHandler(event) {
   renderCanvas();
 }
 
+function polygonDragenterHandler(event) {
+  const { x, y } = recordMouse(event);
+  for (let i = 0; i < container.polygons.length; i++) {
+    polygonVertexDragged = container.polygons[i].touchVertex(x, y);
+    if (polygonVertexDragged !== -1) {
+      polygonDragged = i
+      break
+    }
+  }
+}
+
+function polygonDragoverHandler(event){
+  const { x, y } = recordMouse(event);
+  if (polygonDragged !== -1){
+    container.polygons[polygonDragged].updateVertexAtIndex(polygonVertexDragged, x, y);
+  }
+  renderCanvas();
+}
+
+function polygonDragleaveHandler(event){
+  polygonDragged = -1;
+  polygonVertexDragged = -1;
+}
+
+// -----------------SHAPE HANDLER----------------- //
+
 // get chosen shape's information
 function getShapeInfo(event) {
   let shapeType = 0,
@@ -372,14 +397,19 @@ function eventHandler() {
       let { shapeType, idxOnContainer, idx } = getShapeInfo(event);
       // change color
       changeColor(shapeType, idxOnContainer, idx);
+
+      // Change shape's vertex by dragging
+
+      // TODO : YANG ATAS GANTI IF CHECKEDSQUARE REC DLL
+      polygonDragenterHandler(event);
     }
   });
 
   canvas.addEventListener("mousemove", function (event) {
     const {x,y} = recordMouse(event);
     mouseX = x
-    mouseY = y
-    
+    mouseY = y 
+
     if (document.querySelector("#draw").checked) {
       if (document.querySelector("#line").checked) {
         lineMoveHandler(event);
@@ -391,11 +421,64 @@ function eventHandler() {
         polygonMoveHandler(event);
       }
     } else if (document.querySelector("#edit").checked) {    // edit mode
-      // TODO
+
+      // TODO : YANG ATAS GANTI IF CHECKEDSQUARE REC DLL
+      polygonDragoverHandler(event);
     }
   })
 
-  canvas.addEventListener("keypress", function (event) {
+  canvas.addEventListener("mouseup", function (event) {
+
+    // TODO : YANG ATAS GANTI IF CHECKEDSQUARE REC DLL
+    polygonDragleaveHandler(event);
+    });
+
+  // canvas.addEventListener("dragenter", function (event) {
+  //   console.log("masuk?")
+  //   if (document.querySelector("#edit").checked) {
+  //     if (document.querySelector("#line").checked) {
+  //       lineDragenterHandler(event);
+  //     } else if (document.querySelector("#square").checked) {
+  //       squareDragenterHandler(event);
+  //     } else if (document.querySelector("#rectangle").checked) {
+  //       rectangleDragenterHandler(event);
+  //     } else if (document.querySelector("#polygon").checked) {
+  //       polygonDragenterHandler(event);
+  //     }
+  //   }
+  // })
+
+  // canvas.addEventListener("dragover", function (event) {
+
+  //   if (document.querySelector("#edit").checked) {
+  //     if (document.querySelector("#line").checked) {
+  //       lineDragoverHandler(event);
+  //     } else if (document.querySelector("#square").checked) {
+  //       squareDragoverHandler(event);
+  //     } else if (document.querySelector("#rectangle").checked) {
+  //       rectangleDragoverHandler(event);
+  //     } else if (document.querySelector("#polygon").checked) {
+  //       polygonDragoverHandler(event);
+  //     }
+  //   }
+  // })
+
+  // canvas.addEventListener("dragleave", function (event) {
+
+  //   if (document.querySelector("#edit").checked) {
+  //     if (document.querySelector("#line").checked) {
+  //       lineDragleaveHandler(event);
+  //     } else if (document.querySelector("#square").checked) {
+  //       squareDragleaveHandler(event);
+  //     } else if (document.querySelector("#rectangle").checked) {
+  //       rectangleDragleaveHandler(event);
+  //     } else if (document.querySelector("#polygon").checked) {
+  //       polygonDragleaveHandler(event);
+  //     }
+  //   }
+  // })
+
+  window.addEventListener("keypress", function (event) {
     if (document.querySelector("#draw").checked){
       if (isPolygonHover){
         if (event.key == "Enter") {
@@ -410,7 +493,6 @@ function eventHandler() {
         let idx_poligon = -1;
         for (let i = 0; i < container.polygons.length; i++) {
           idx_poligon = container.polygons[i].touchVertex(mouseX, mouseY);
-          console.log(idx_poligon)
           if (idx_poligon != -1) {
             container.polygons[i].removeVertex(idx_poligon);
             renderCanvas();
