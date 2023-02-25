@@ -140,6 +140,22 @@ export class Rectangle {
     }
   }
 
+  dilateX(scale) {
+    const midPoint = this.midpoint();
+    for (let i = 0; i < this.data.length; i += 6) {
+      const x = this.data[i] - midPoint[0];
+      this.data[i] = x * scale + midPoint[0];
+    }
+  }
+
+  dilateY(scale) {
+    const midPoint = this.midpoint();
+    for (let i = 0; i < this.data.length; i += 6) {
+      const y = this.data[i + 1] - midPoint[1];
+      this.data[i + 1] = y * scale + midPoint[1];
+    }
+  }
+
   dilate(scale) {
     const midPoint = this.midpoint();
     for (let i = 0; i < this.data.length; i += 6) {
