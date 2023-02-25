@@ -69,8 +69,13 @@
         </div>
         <div id="dilation-tool">
           <div>Dilation</div>
-          <input type="range" id="dilation" />
+          <input type="range" id="dilation" min="0" max="2" step="0.1" disabled/>
           <label for="dilation">scale</label>
+        </div>
+        <div id="rotation-tool">
+          <div>Rotation</div>
+          <input type="range" id="rotation" value="0" min="0" max="360" step="1" disabled/>
+          <label for="rotation">degree</label>
         </div>
         <div id="file-tool">
           <button id="save">Save</button>

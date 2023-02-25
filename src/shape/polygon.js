@@ -96,20 +96,9 @@ export class Polygon {
 
   touch(x, y) {
     let n = this.data.length / 6;
-    let hullVertices = this.convexHull();
-    let hullVerticesLength = hullVertices.length / 6;
-
-    if (n <= 3) {
-      for (let i = 0; i < n; i++) {
-        if (Math.abs(this.data[i * 6] - x) < this.acceptedRadius && Math.abs(this.data[i * 6 + 1] - y) < this.acceptedRadius) {
-          return true;
-        }
-      }
-    } else {
-      for (let i = 0; i < hullVerticesLength; i++) {
-        if (Math.abs(hullVertices[i * 6] - x) < this.acceptedRadius && Math.abs(hullVertices[i * 6 + 1] - y) < this.acceptedRadius) {
-          return true;
-        }
+    for (let i = 0; i < n; i++) {
+      if (Math.abs(this.data[i * 6] - x) < this.acceptedRadius && Math.abs(this.data[i * 6 + 1] - y) < this.acceptedRadius) {
+        return true;
       }
     }
     return false;
@@ -131,6 +120,27 @@ export class Polygon {
     for (let i = 0; i < n; i++) {
       this.data[i * 6] += dx;
       this.data[i * 6 + 1] += dy;
+    }
+  }
+
+  rotate(angle) {
+    const angleRad = angle * Math.PI / 180;
+    let n = this.data.length / 6;
+    let mid = this.midpoint();
+    for (let i = 0; i < n; i++) {
+      let x = this.data[i * 6] - mid[0];
+      let y = this.data[i * 6 + 1] - mid[1];
+      this.data[i * 6] = x * Math.cos(angleRad) - y * Math.sin(angleRad) + mid[0];
+      this.data[i * 6 + 1] = x * Math.sin(angleRad) + y * Math.cos(angleRad) + mid[1];
+    }
+  }
+
+  dilate(scale) {
+    let n = this.data.length / 6;
+    let mid = this.midpoint();
+    for (let i = 0; i < n; i++) {
+      this.data[i * 6] = (this.data[i * 6] - mid[0]) * scale + mid[0];
+      this.data[i * 6 + 1] = (this.data[i * 6 + 1] - mid[1]) * scale + mid[1];
     }
   }
 

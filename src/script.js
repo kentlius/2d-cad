@@ -16,6 +16,8 @@ let mouseX = 0;
 let mouseY = 0;
 let previoustranslateX = 0;
 let previoustranslateY = 0;
+let previousScale = 0;
+let previousRotate = 0;
 
 let newLine = -1;
 let isLineHover = false;
@@ -175,34 +177,33 @@ function changeColor(shapeType, idxOnContainer, idx) {
 
 // -----------------TRANSFORMATION HANDLER----------------- //
 function changeTranslateValue(shapeType, idxOnContainer) {
+  document.querySelector("#x-axis-translation").disabled = false;
+  document.querySelector("#y-axis-translation").disabled = false;
+  document.querySelector("#dilation").disabled = false;
+  document.querySelector("#dilation").value = 1;
+  previousScale = 0;
+  document.querySelector("#rotation").disabled = false;
+  previousRotate = 0;
   switch (shapeType) {
     case 1: // line
-      document.querySelector("#x-axis-translation").disabled = false;
-      document.querySelector("#y-axis-translation").disabled = false;
       document.querySelector("#x-axis-translation").value = container.lines[idxOnContainer].midpoint()[0];
       document.querySelector("#y-axis-translation").value = container.lines[idxOnContainer].midpoint()[1];
       previoustranslateX = container.lines[idxOnContainer].midpoint()[0];
       previoustranslateY = container.lines[idxOnContainer].midpoint()[1];
       break;
     case 2: // square
-      document.querySelector("#x-axis-translation").disabled = false;
-      document.querySelector("#y-axis-translation").disabled = false;
       document.querySelector("#x-axis-translation").value = container.squares[idxOnContainer].midpoint()[0];
       document.querySelector("#y-axis-translation").value = container.squares[idxOnContainer].midpoint()[1];
       previoustranslateX = container.squares[idxOnContainer].midpoint()[0];
       previoustranslateY = container.squares[idxOnContainer].midpoint()[1];
       break;
     case 3: // rectangle
-      document.querySelector("#x-axis-translation").disabled = false;
-      document.querySelector("#y-axis-translation").disabled = false;
       document.querySelector("#x-axis-translation").value = container.rectangles[idxOnContainer].midpoint()[0];
       document.querySelector("#y-axis-translation").value = container.rectangles[idxOnContainer].midpoint()[1];
       previoustranslateX = container.rectangles[idxOnContainer].midpoint()[0];
       previoustranslateY = container.rectangles[idxOnContainer].midpoint()[1];
       break;
     case 4: // polygon
-      document.querySelector("#x-axis-translation").disabled = false;
-      document.querySelector("#y-axis-translation").disabled = false;
       document.querySelector("#x-axis-translation").value = container.polygons[idxOnContainer].midpoint()[0];
       document.querySelector("#y-axis-translation").value = container.polygons[idxOnContainer].midpoint()[1];
       previoustranslateX = container.polygons[idxOnContainer].midpoint()[0];
@@ -211,6 +212,8 @@ function changeTranslateValue(shapeType, idxOnContainer) {
     default:
       document.querySelector("#x-axis-translation").disabled = true;
       document.querySelector("#y-axis-translation").disabled = true;
+      document.querySelector("#dilation").disabled = true;
+      document.querySelector("#rotation").disabled = true;
       document.querySelector("#x-axis-translation").value = 0;
       document.querySelector("#y-axis-translation").value = 0;
       break;
@@ -703,6 +706,42 @@ function eventHandler() {
     } else if (document.querySelector("#polygon").checked) {
       container.polygons[selectedPolygon].translate(0, translateY.value - previoustranslateY);
       previoustranslateY = translateY.value;
+    }
+    renderCanvas();
+  });
+
+  const dilation = document.querySelector("#dilation");
+  dilation.addEventListener("input", () => {
+    if (document.querySelector("#line").checked) {
+      container.lines[selectedLine].dilate(dilation.value - previousScale);
+      previousScale = dilation.value - 1;
+    } else if (document.querySelector("#square").checked) {
+      container.squares[selectedSquare].dilate(dilation.value - previousScale);
+      previousScale = dilation.value - 1;
+    } else if (document.querySelector("#rectangle").checked) {
+      container.rectangles[selectedRect].dilate(dilation.value - previousScale);
+      previousScale = dilation.value - 1;
+    } else if (document.querySelector("#polygon").checked) {
+      container.polygons[selectedPolygon].dilate(dilation.value - previousScale);
+      previousScale = dilation.value - 1;
+    }
+    renderCanvas();
+  });
+
+  const rotation = document.querySelector("#rotation");
+  rotation.addEventListener("input", () => {
+    if (document.querySelector("#line").checked) {
+      container.lines[selectedLine].rotate(previousRotate - rotation.value);
+      previousRotate = rotation.value;
+    } else if (document.querySelector("#square").checked) {
+      container.squares[selectedSquare].rotate(previousRotate - rotation.value);
+      previousRotate = rotation.value;
+    } else if (document.querySelector("#rectangle").checked) {
+      container.rectangles[selectedRect].rotate(previousRotate - rotation.value);
+      previousRotate = rotation.value;
+    } else if (document.querySelector("#polygon").checked) {
+      container.polygons[selectedPolygon].rotate(previousRotate - rotation.value);
+      previousRotate = rotation.value;
     }
     renderCanvas();
   });

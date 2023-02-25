@@ -124,6 +124,27 @@ export class Square {
     }
   }
 
+  rotate(angle) {
+    const angleRad = (angle * Math.PI) / 180;
+    const [x, y] = this.midpoint();
+    for (let i = 0; i < this.data.length; i += 6) {
+      const x1 = this.data[i] - x;
+      const y1 = this.data[i + 1] - y;
+      this.data[i] = x1 * Math.cos(angleRad) - y1 * Math.sin(angleRad) + x;
+      this.data[i + 1] = x1 * Math.sin(angleRad) + y1 * Math.cos(angleRad) + y;
+    }
+  }
+
+  dilate(scale) {
+    const [x, y] = this.midpoint();
+    for (let i = 0; i < this.data.length; i += 6) {
+      const x1 = this.data[i] - x;
+      const y1 = this.data[i + 1] - y;
+      this.data[i] = x1 * scale + x;
+      this.data[i + 1] = y1 * scale + y;
+    }
+  }
+
   render(gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
