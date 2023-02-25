@@ -17,6 +17,8 @@ let mouseY = 0;
 let previoustranslateX = 0;
 let previoustranslateY = 0;
 let previousScale = 0;
+let previousScaleX = 0;
+let previousScaleY = 0;
 let previousRotate = 0;
 
 let newLine = -1;
@@ -177,6 +179,10 @@ function changeTranslateValue(shapeType, idxOnContainer) {
   document.querySelector("#dilation").disabled = false;
   document.querySelector("#dilation").value = 1;
   previousScale = 0;
+  document.querySelector("#x-axis-dilation").disabled = false;
+  document.querySelector("#y-axis-dilation").disabled = false;
+  previousScaleX = 0;
+  previousScaleY = 0;
   document.querySelector("#rotation").disabled = false;
   previousRotate = 0;
   switch (shapeType) {
@@ -741,6 +747,24 @@ function eventHandler() {
     } else if (document.querySelector("#polygon").checked) {
       container.polygons[selectedPolygon].dilate(dilation.value - previousScale);
       previousScale = dilation.value - 1;
+    }
+    renderCanvas();
+  });
+
+  const rectDilationX = document.querySelector("#x-axis-dilation");
+  rectDilationX.addEventListener("input", () => {
+    if (document.querySelector("#rectangle").checked) {
+      container.rectangles[selectedRect].dilateX(rectDilationX.value - previousScaleX);
+      previousScaleX = rectDilationX.value - 1;
+    }
+    renderCanvas();
+  });
+
+  const rectDilationY = document.querySelector("#y-axis-dilation");
+  rectDilationY.addEventListener("input", () => {
+    if (document.querySelector("#rectangle").checked) {
+      container.rectangles[selectedRect].dilateY(rectDilationY.value - previousScaleY);
+      previousScaleY = rectDilationY.value - 1;
     }
     renderCanvas();
   });
