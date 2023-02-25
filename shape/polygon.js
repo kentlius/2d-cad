@@ -36,7 +36,7 @@ export class Polygon {
   removeVertex(n){
     this.data.splice(n, 6);
     this.lock.splice(n/6, 1);
-    if (this.data.length <= 6){
+    if (this.data.length <= 12){
       this.data.splice(0, this.data.length);
       this.lock.splice(0, this.lock.length);
     }
