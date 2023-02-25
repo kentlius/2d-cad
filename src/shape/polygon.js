@@ -104,18 +104,32 @@ export class Polygon {
     return hullVertices
   }
 
-  touch(x, y) {
-    let hull = this.convexHull();
-    let hullN = hull.length / 6;
-    let isInside = false;
-    let j = hullN - 1;
-    for (let i = 0; i < hullN; i++) {
-      if (hull[i * 6 + 1] > y != hull[j * 6 + 1] > y && x < (hull[j * 6] - hull[i * 6]) * (y - hull[i * 6 + 1]) / (hull[j * 6 + 1] - hull[i * 6 + 1]) + hull[i * 6]) {
-        isInside = !isInside;
+  touch(x, y, convexHull) {
+    if (convexHull) {
+      let hull = this.convexHull();
+      let hullN = hull.length / 6;
+      let isInside = false;
+      let j = hullN - 1;
+      for (let i = 0; i < hullN; i++) {
+        if (hull[i * 6 + 1] > y != hull[j * 6 + 1] > y && x < (hull[j * 6] - hull[i * 6]) * (y - hull[i * 6 + 1]) / (hull[j * 6 + 1] - hull[i * 6 + 1]) + hull[i * 6]) {
+          isInside = !isInside;
+        }
+        j = i;
       }
-      j = i;
+      return isInside;
+    } else {
+      let n = this.data.length / 6;
+      let isInside = false;
+      let j = n - 1;
+      for (let i = 0; i < n; i++) {
+        if (this.data[i * 6 + 1] > y != this.data[j * 6 + 1] > y && x < (this.data[j * 6] - this.data[i * 6]) * (y - this.data[i * 6 + 1]) / (this.data[j * 6 + 1] - this.data[i * 6 + 1]) + this.data[i * 6]) {
+          isInside = !isInside;
+        }
+        j = i;
+      }
+      return isInside;
     }
-    return isInside;
+
   }
 
   midpoint() {

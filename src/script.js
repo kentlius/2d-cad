@@ -458,7 +458,7 @@ function polygonMoveHandler(event) {
 function polygonSelectHandler(event) {
   const { x, y } = recordMouse(event);
   for (let i = 0; i < container.polygons.length; i++) {
-    if (container.polygons[i].touch(x, y)) {
+    if (container.polygons[i].touch(x, y, document.querySelector("#convexhull").checked)) {
       selectedPolygon = i;
       changeTranslateValue(4, i);
       break;
