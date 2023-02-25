@@ -106,7 +106,11 @@ export class Square {
   }
 
   touch(x, y) {
-    return x >= this.x1 && x <= this.x2 && y <= this.y1 && y >= this.y2;
+    // handle kalau x1 nya ternyata di kanan, x2 di kiri dan y nya juga
+    return x >= this.x1 && x <= this.x2 && y <= this.y1 && y >= this.y2 || 
+    x >= this.x2 && x <= this.x1 && y <= this.y2 && y >= this.y1 || 
+    x >= this.x2 && x <= this.x1 && y <= this.y1 && y >= this.y2 || 
+    x >= this.x1 && x <= this.x2 && y <= this.y2 && y >= this.y1 ;
   }
 
   midpoint(){
