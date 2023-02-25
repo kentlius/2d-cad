@@ -2,6 +2,7 @@ export class Polygon {
   constructor() {
     this.data = [];
     this.acceptedRadius = 0.1;
+    this.lock = []
   }
 
   isVertexAlreadyExist(x, y) {
@@ -15,21 +16,30 @@ export class Polygon {
 
   addVertex(x, y, colors) {
     if (!this.isVertexAlreadyExist(x, y)) {
-    this.data.push(x, y, colors[0], colors[1], colors[2], colors[3]);
+      this.data.push(x, y, colors[0], colors[1], colors[2], colors[3]);
+      this.lock.push(0)
     }
   }
 
   updateVertex(idx,x,y){
-    this.data[idx] = x;
-    this.data[idx+1] = y;
+    if(this.lock[idx/6] == 0){
+      this.data[idx] = x;
+      this.data[idx+1] = y;
+    }
   }
 
   deleteLast(){
     this.data.splice(this.data.length - 6, 6);  
+    this.lock.splice(this.lock.length -1, 1);
   }
 
   removeVertex(n){
     this.data.splice(n, 6);
+    this.lock.splice(n/6, 1);
+    if (this.data.length <= 6){
+      this.data.splice(0, this.data.length);
+      this.lock.splice(0, this.lock.length);
+    }
   }
   
   touchVertex(x, y){
@@ -95,13 +105,17 @@ export class Polygon {
   }
 
   touch(x, y) {
-    let n = this.data.length / 6;
-    for (let i = 0; i < n; i++) {
-      if (Math.abs(this.data[i * 6] - x) < this.acceptedRadius && Math.abs(this.data[i * 6 + 1] - y) < this.acceptedRadius) {
-        return true;
+    let hull = this.convexHull();
+    let hullN = hull.length / 6;
+    let isInside = false;
+    let j = hullN - 1;
+    for (let i = 0; i < hullN; i++) {
+      if (hull[i * 6 + 1] > y != hull[j * 6 + 1] > y && x < (hull[j * 6] - hull[i * 6]) * (y - hull[i * 6 + 1]) / (hull[j * 6 + 1] - hull[i * 6 + 1]) + hull[i * 6]) {
+        isInside = !isInside;
       }
+      j = i;
     }
-    return false;
+    return isInside;
   }
 
   midpoint() {
@@ -118,8 +132,10 @@ export class Polygon {
   translate(dx, dy) {
     let n = this.data.length / 6;
     for (let i = 0; i < n; i++) {
-      this.data[i * 6] += dx;
-      this.data[i * 6 + 1] += dy;
+      if (this.lock[i] == 0) {
+        this.data[i * 6] += dx;
+        this.data[i * 6 + 1] += dy;
+      }
     }
   }
 
@@ -128,10 +144,12 @@ export class Polygon {
     let n = this.data.length / 6;
     let mid = this.midpoint();
     for (let i = 0; i < n; i++) {
-      let x = this.data[i * 6] - mid[0];
-      let y = this.data[i * 6 + 1] - mid[1];
-      this.data[i * 6] = x * Math.cos(angleRad) - y * Math.sin(angleRad) + mid[0];
-      this.data[i * 6 + 1] = x * Math.sin(angleRad) + y * Math.cos(angleRad) + mid[1];
+      if (this.lock[i] == 0) {
+        let x = this.data[i * 6] - mid[0];
+        let y = this.data[i * 6 + 1] - mid[1];
+        this.data[i * 6] = x * Math.cos(angleRad) - y * Math.sin(angleRad) + mid[0];
+        this.data[i * 6 + 1] = x * Math.sin(angleRad) + y * Math.cos(angleRad) + mid[1];
+      }
     }
   }
 
@@ -139,8 +157,28 @@ export class Polygon {
     let n = this.data.length / 6;
     let mid = this.midpoint();
     for (let i = 0; i < n; i++) {
-      this.data[i * 6] = (this.data[i * 6] - mid[0]) * scale + mid[0];
-      this.data[i * 6 + 1] = (this.data[i * 6 + 1] - mid[1]) * scale + mid[1];
+      if (this.lock[i] == 0) {
+        this.data[i * 6] = (this.data[i * 6] - mid[0]) * scale + mid[0];
+        this.data[i * 6 + 1] = (this.data[i * 6 + 1] - mid[1]) * scale + mid[1];
+      }
+    }
+  }
+
+  changeLock(index) {
+    if (this.lock[index/6] == 0) {
+      this.lock[index/6] = 1;
+    } else {
+      this.lock[index/6] = 0;
+    }
+  }
+
+  renderLocks(gl) {
+    let n = this.data.length / 6;
+    for (let i = 0; i < n; i++) {
+      if (this.lock[i] == 1) {
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([this.data[i * 6], this.data[i * 6 + 1], 1, 0, 0, 1]), gl.STATIC_DRAW);
+        gl.drawArrays(gl.POINTS, 0, 1);
+      }
     }
   }
 
@@ -165,5 +203,7 @@ export class Polygon {
     else{
       gl.drawArrays(gl.POINTS, 0, n);
     }
+
+    this.renderLocks(gl);
   }
 }
