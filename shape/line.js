@@ -50,11 +50,32 @@ export class Line {
     return [(this.data[0] + this.data[6])/2, (this.data[1] + this.data[7])/2];
   }
 
-  translate(dx, dy){
-    this.data[0] += dx;
-    this.data[1] += dy;
-    this.data[6] += dx;
-    this.data[7] += dy;
+  translate(x, y){
+    this.data[0] += x;
+    this.data[1] += y;
+    this.data[6] += x;
+    this.data[7] += y;
+  }
+
+  rotate(angle){
+    const angleRad = angle * Math.PI / 180;
+    let x1 = this.data[0];
+    let y1 = this.data[1];
+    let x2 = this.data[6];
+    let y2 = this.data[7];
+    const [x, y] = this.midpoint();
+    this.data[0] = (x1 - x) * Math.cos(angleRad) - (y1 - y) * Math.sin(angleRad) + x;
+    this.data[1] = (x1 - x) * Math.sin(angleRad) + (y1 - y) * Math.cos(angleRad) + y;
+    this.data[6] = (x2 - x) * Math.cos(angleRad) - (y2 - y) * Math.sin(angleRad) + x;
+    this.data[7] = (x2 - x) * Math.sin(angleRad) + (y2 - y) * Math.cos(angleRad) + y;
+  }
+
+  dilate(scale){
+    const [x, y] = this.midpoint();
+    this.data[0] = (this.data[0] - x) * scale + x;
+    this.data[1] = (this.data[1] - y) * scale + y;
+    this.data[6] = (this.data[6] - x) * scale + x;
+    this.data[7] = (this.data[7] - y) * scale + y;
   }
   
   render(gl) {

@@ -123,6 +123,29 @@ export class Rectangle {
     }
   }
 
+  rotate(angle) {
+    const angleRad = (angle * Math.PI) / 180;
+    const midPoint = this.midpoint();
+    const cos = Math.cos(angleRad);
+    const sin = Math.sin(angleRad);
+    for (let i = 0; i < this.data.length; i += 6) {
+      const x = this.data[i] - midPoint[0];
+      const y = this.data[i + 1] - midPoint[1];
+      this.data[i] = x * cos - y * sin + midPoint[0];
+      this.data[i + 1] = x * sin + y * cos + midPoint[1];
+    }
+  }
+
+  dilate(scale) {
+    const midPoint = this.midpoint();
+    for (let i = 0; i < this.data.length; i += 6) {
+      const x = this.data[i] - midPoint[0];
+      const y = this.data[i + 1] - midPoint[1];
+      this.data[i] = x * scale + midPoint[0];
+      this.data[i + 1] = y * scale + midPoint[1];
+    }
+  }
+
   render(gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.data), gl.STATIC_DRAW);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
