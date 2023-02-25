@@ -211,6 +211,10 @@ function changeTranslateValue(shapeType, idxOnContainer) {
       document.querySelector("#rotation").disabled = true;
       document.querySelector("#x-axis-translation").value = 0;
       document.querySelector("#y-axis-translation").value = 0;
+      selectedLine = -1;
+      selectedSquare = -1;
+      selectedRect = -1;
+      selectedPolygon = -1;
       break;
   }
 }
@@ -676,6 +680,12 @@ function eventHandler() {
             renderCanvas();
             break;
           }
+        }
+      }
+      if(event.code == "KeyA"){
+        if (selectedPolygon != -1){
+          container.polygons[selectedPolygon].addVertex(mouseX, mouseY,[...currentColor]);
+          renderCanvas();
         }
       }
     }
