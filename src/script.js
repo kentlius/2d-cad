@@ -214,6 +214,8 @@ function changeTranslateValue(shapeType, idxOnContainer) {
       document.querySelector("#x-axis-translation").disabled = true;
       document.querySelector("#y-axis-translation").disabled = true;
       document.querySelector("#dilation").disabled = true;
+      document.querySelector("#x-axis-dilation").disabled = true;
+      document.querySelector("#y-axis-dilation").disabled = true;
       document.querySelector("#rotation").disabled = true;
       document.querySelector("#x-axis-translation").value = 0;
       document.querySelector("#y-axis-translation").value = 0;
@@ -735,17 +737,18 @@ function eventHandler() {
 
   const dilation = document.querySelector("#dilation");
   dilation.addEventListener("input", () => {
+    let scale = dilation.value - previousScale > 1 ? 1.1 : 1/(1.1);
     if (document.querySelector("#line").checked) {
-      container.lines[selectedLine].dilate(dilation.value - previousScale);
+      container.lines[selectedLine].dilate(scale);
       previousScale = dilation.value - 1;
     } else if (document.querySelector("#square").checked) {
-      container.squares[selectedSquare].dilate(dilation.value - previousScale);
+      container.squares[selectedSquare].dilate(scale);
       previousScale = dilation.value - 1;
     } else if (document.querySelector("#rectangle").checked) {
-      container.rectangles[selectedRect].dilate(dilation.value - previousScale);
+      container.rectangles[selectedRect].dilate(scale);
       previousScale = dilation.value - 1;
     } else if (document.querySelector("#polygon").checked) {
-      container.polygons[selectedPolygon].dilate(dilation.value - previousScale);
+      container.polygons[selectedPolygon].dilate(scale);
       previousScale = dilation.value - 1;
     }
     renderCanvas();
@@ -754,7 +757,7 @@ function eventHandler() {
   const rectDilationX = document.querySelector("#x-axis-dilation");
   rectDilationX.addEventListener("input", () => {
     if (document.querySelector("#rectangle").checked) {
-      container.rectangles[selectedRect].dilateX(rectDilationX.value - previousScaleX);
+      container.rectangles[selectedRect].dilateX(rectDilationX.value - previousScaleX > 1 ? 1.1 : 1/(1.1));
       previousScaleX = rectDilationX.value - 1;
     }
     renderCanvas();
@@ -763,7 +766,7 @@ function eventHandler() {
   const rectDilationY = document.querySelector("#y-axis-dilation");
   rectDilationY.addEventListener("input", () => {
     if (document.querySelector("#rectangle").checked) {
-      container.rectangles[selectedRect].dilateY(rectDilationY.value - previousScaleY);
+      container.rectangles[selectedRect].dilateY(rectDilationY.value - previousScaleY > 1 ? 1.1 : 1/(1.1));
       previousScaleY = rectDilationY.value - 1;
     }
     renderCanvas();
