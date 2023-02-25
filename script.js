@@ -121,11 +121,6 @@ const main = () => {
 function resetCanvas() {
   container.clear();
   clearCanvas();
-  container.polygons = []
-  container.renderOrder = []
-  container.squares = []
-  container.rectangles = []
-  container.lines = []
 }
 
 function clearCanvas() {
@@ -649,10 +644,11 @@ function eventHandler() {
     }
     });
 
-  window.addEventListener("keypress", function (event) {
+  window.addEventListener("keydown", function (event) {
+    console.log(event.key , event.code)
     if (document.querySelector("#draw").checked){   // draw mode
       if (isPolygonHover){
-        if (event.key == "Enter") {
+        if (event.code == "Enter") {
           event.preventDefault();
           isPolygonHover = false;
           newPolygon = -1;
@@ -660,12 +656,23 @@ function eventHandler() {
         }
       }
     }else{                                          // edit mode
-      if (event.key == "Enter") {
+      if (event.code == "Backspace" || event.code == "Delete") {
         let idx_poligon = -1;
         for (let i = 0; i < container.polygons.length; i++) {
           idx_poligon = container.polygons[i].touchVertex(mouseX, mouseY);
           if (idx_poligon != -1) {
             container.polygons[i].removeVertex(idx_poligon);
+            renderCanvas();
+            break;
+          }
+        }
+      }
+      if(event.code == "Space"){
+        let idx_poligon = -1;
+        for (let i = 0; i < container.polygons.length; i++) {
+          idx_poligon = container.polygons[i].touchVertex(mouseX, mouseY);
+          if (idx_poligon != -1) {
+            container.polygons[i].changeLock(idx_poligon);
             renderCanvas();
             break;
           }
@@ -833,6 +840,7 @@ function eventHandler() {
       models.polygons.forEach((polygon) => {
         let loadedPoly = new Polygon();
         loadedPoly.data=[...polygon.data];
+        loadedPoly.lock=[...polygon.lock];
         container.polygons.push(loadedPoly);
       });
       // render canvas
