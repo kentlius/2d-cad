@@ -17,9 +17,12 @@ Website ini menyediakan kanvas digital pada browser sedemikian sehingga pada kan
 - Pada VS Code, install ekstensi <strong>Live Share</strong>
 
 ### How to Run
+#### Cara 1
 1. Buka file index.html melalui VS Code
 2. Klik kanan, lalu klik `Open with Live Server`
 3. Website siap digunakan
+#### Cara 2
+Buka tautan berikut https://kentlius.github.io/2d-cad/
 
 ## Contributors
 ### Kelas 02 - Kelompok 19
