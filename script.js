@@ -191,24 +191,36 @@ function changeTranslateValue(shapeType, idxOnContainer) {
       document.querySelector("#y-axis-translation").value = container.lines[idxOnContainer].midpoint()[1];
       previoustranslateX = container.lines[idxOnContainer].midpoint()[0];
       previoustranslateY = container.lines[idxOnContainer].midpoint()[1];
+      selectedSquare = -1;
+      selectedRect = -1;
+      selectedPolygon = -1;
       break;
     case 2: // square
       document.querySelector("#x-axis-translation").value = container.squares[idxOnContainer].midpoint()[0];
       document.querySelector("#y-axis-translation").value = container.squares[idxOnContainer].midpoint()[1];
       previoustranslateX = container.squares[idxOnContainer].midpoint()[0];
       previoustranslateY = container.squares[idxOnContainer].midpoint()[1];
+      selectedLine = -1;
+      selectedRect = -1;
+      selectedPolygon = -1;
       break;
     case 3: // rectangle
       document.querySelector("#x-axis-translation").value = container.rectangles[idxOnContainer].midpoint()[0];
       document.querySelector("#y-axis-translation").value = container.rectangles[idxOnContainer].midpoint()[1];
       previoustranslateX = container.rectangles[idxOnContainer].midpoint()[0];
       previoustranslateY = container.rectangles[idxOnContainer].midpoint()[1];
+      selectedLine = -1;
+      selectedSquare = -1;
+      selectedPolygon = -1;
       break;
     case 4: // polygon
       document.querySelector("#x-axis-translation").value = container.polygons[idxOnContainer].midpoint()[0];
       document.querySelector("#y-axis-translation").value = container.polygons[idxOnContainer].midpoint()[1];
       previoustranslateX = container.polygons[idxOnContainer].midpoint()[0];
       previoustranslateY = container.polygons[idxOnContainer].midpoint()[1];
+      selectedLine = -1;
+      selectedSquare = -1;
+      selectedRect = -1;
       break;
     default:
       document.querySelector("#x-axis-translation").disabled = true;
@@ -562,6 +574,20 @@ function getShapeInfo(event) {
   return { shapeType, idxOnContainer, idx };
 }
 
+// get index of render order of selected type and index
+function getRenderOrder(selectedType, selectedIndex) {
+  let count = 0;
+  for (let i = 0; i < container.renderOrder.length; i++) {
+    if (container.renderOrder[i] === selectedType) {
+      if (count === selectedIndex) {
+        return i;
+      }
+      count++;
+    }
+  }
+  return -1;
+}
+
 // -----------------EVENT HANDLER----------------- //
 function eventHandler() {
   canvas.addEventListener("mousedown", function (event) {
@@ -668,7 +694,7 @@ function eventHandler() {
         }
       }
     }else{                                          // edit mode
-      if (event.code == "Backspace" || event.code == "Delete") {
+      if (event.code == "Backspace" ) {
         let idx_poligon = -1;
         for (let i = 0; i < container.polygons.length; i++) {
           idx_poligon = container.polygons[i].touchVertex(mouseX, mouseY);
@@ -693,6 +719,32 @@ function eventHandler() {
       if(event.code == "KeyA"){
         if (selectedPolygon != -1){
           container.polygons[selectedPolygon].addVertex(mouseX, mouseY,[...currentColor]);
+          renderCanvas();
+        }
+      }
+      if(event.code =="Delete"){
+        if (selectedLine != -1){
+          container.renderOrder.splice(getRenderOrder(1,selectedLine),1)
+          container.lines.splice(selectedLine,1);
+          selectedLine = -1;
+          renderCanvas();
+        }
+        if (selectedSquare != -1){
+          container.renderOrder.splice(getRenderOrder(2,selectedSquare),1)
+          container.squares.splice(selectedSquare,1);
+          selectedSquare = -1;
+          renderCanvas();
+        }
+        if (selectedRect != -1){
+          container.renderOrder.splice(getRenderOrder(3,selectedRect),1)
+          container.rectangles.splice(selectedRect,1);
+          selectedRect = -1;
+          renderCanvas();
+        }
+        if (selectedPolygon != -1){
+          container.renderOrder.splice(getRenderOrder(4,selectedPolygon),1)
+          container.polygons.splice(selectedPolygon,1);
+          selectedPolygon = -1;
           renderCanvas();
         }
       }
